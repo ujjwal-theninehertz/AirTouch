@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">AirTouch</string>
+    <string name="accessibility_service_label">AirTouch gesture control</string>
+    <string name="live_channel_name">Hands-free mode</string>
+    <string name="live_notification_title">AirTouch is on</string>
+    <string name="live_notification_text">The front camera is watching for hand gestures. Frames stay on this phone.</string>
+    <string name="live_notification_text_face">The front camera is watching for face gestures. Frames stay on this phone.</string>
+    <string name="live_notification_stop">Stop</string>
+    <string name="live_notification_pause">Pause</string>
+    <string name="live_notification_resume">Resume</string>
+    <string name="live_notification_title_paused">AirTouch is paused</string>
+    <string name="tile_label">AirTouch</string>
+    <string name="accessibility_service_description">Lets AirTouch perform swipes, taps, drags and Back in other apps when you make hand gestures in front of the front camera. To aim the cursor at buttons and find YouTube\'s player, it reads where views are on screen (never their text). Camera frames and screen contents are processed on this phone and are never stored or sent anywhere.</string>
+</resources>

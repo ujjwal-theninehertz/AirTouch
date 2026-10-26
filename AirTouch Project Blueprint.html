@@ -1,0 +1,1373 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>AirTouch Project Blueprint</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: engineering blueprint. Sticky section bar, 1160px reading column, full-width figures that scroll sideways on phones, 2-up card grids that stack below 640px. Layer hues (capture, perceive, decide, act, system) repeat across every diagram and list. */
+:root{
+  --bg:#F3F5F7; --surface:#FFFFFF; --surface-2:#E9EDF1; --ink:#14212D; --muted:#566370; --line:#D3DAE1;
+  --accent:#0B7C70;
+  --cap:#2B5FD0; --cap-soft:#E5ECFB;
+  --per:#0B7C70; --per-soft:#DDF1EE;
+  --dec:#6A45C0; --dec-soft:#ECE6F9;
+  --act:#AD5B07; --act-soft:#FAEBDA;
+  --os:#5A6672; --os-soft:#E8ECEF;
+  --ok:#1E7440; --ok-soft:#E1F1E6;
+  --warn:#8F5B00; --warn-soft:#F9EED5;
+  --risk:#B3261E; --risk-soft:#FBE7E5;
+  --f-display:"IBM Plex Sans Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E141A; --surface:#151D25; --surface-2:#1C2731; --ink:#E4EAF0; --muted:#98A6B3; --line:#2B3743;
+    --accent:#4FCDBB;
+    --cap:#8AABF6; --cap-soft:#1A2642; --per:#4FCDBB; --per-soft:#0F2E2A; --dec:#B79FF3; --dec-soft:#261D3F;
+    --act:#EFA85A; --act-soft:#33240F; --os:#A2AFBB; --os-soft:#1F2932;
+    --ok:#6FCB90; --ok-soft:#13301F; --warn:#E6BD5C; --warn-soft:#30260E; --risk:#F28B82; --risk-soft:#3B1B19;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E141A; --surface:#151D25; --surface-2:#1C2731; --ink:#E4EAF0; --muted:#98A6B3; --line:#2B3743;
+  --accent:#4FCDBB;
+  --cap:#8AABF6; --cap-soft:#1A2642; --per:#4FCDBB; --per-soft:#0F2E2A; --dec:#B79FF3; --dec-soft:#261D3F;
+  --act:#EFA85A; --act-soft:#33240F; --os:#A2AFBB; --os-soft:#1F2932;
+  --ok:#6FCB90; --ok-soft:#13301F; --warn:#E6BD5C; --warn-soft:#30260E; --risk:#F28B82; --risk-soft:#3B1B19;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 var(--f-body);-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:1160px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:var(--accent);text-underline-offset:2px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+h1,h2,h3,h4{font-family:var(--f-display);text-wrap:balance;line-height:1.15;margin:0}
+h1{font-size:clamp(32px,5vw,46px);font-weight:700;letter-spacing:-.01em}
+h2{font-size:clamp(25px,3.4vw,31px);font-weight:600}
+h3{font-size:19px;font-weight:600}
+h4{font-size:16px;font-weight:600}
+p{margin:0}
+ul,ol{margin:0;padding-left:1.2em}
+li+li{margin-top:4px}
+.eyebrow{font:500 11.5px/1.3 var(--f-mono);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.lead{font-size:17px;line-height:1.6;max-width:70ch}
+.prose{max-width:72ch;display:grid;gap:12px}
+.muted{color:var(--muted)}
+.small{font-size:13.5px}
+code{font-family:var(--f-mono);font-size:.86em;background:var(--surface-2);padding:.08em .35em;border-radius:4px;overflow-wrap:anywhere}
+strong{font-weight:600}
+
+/* top bar */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--surface);border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;align-items:center;gap:14px;min-height:52px}
+.brand{display:flex;align-items:center;gap:8px;font:700 16px var(--f-display);color:var(--ink);text-decoration:none;white-space:nowrap}
+.brand svg{color:var(--ink)}
+.nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;min-width:0;flex:1}
+.nav::-webkit-scrollbar{display:none}
+.nav a{font:500 13px var(--f-body);color:var(--muted);text-decoration:none;padding:6px 9px;border-radius:6px;white-space:nowrap}
+.nav a:hover{color:var(--ink);background:var(--surface-2)}
+.nav a[aria-current="true"]{color:var(--ink);background:var(--surface-2)}
+
+/* hero */
+.hero{background:var(--surface);border-bottom:1px solid var(--line);padding-block:40px 32px}
+.hero .wrap{display:grid;gap:18px}
+.meta{display:flex;flex-wrap:wrap;gap:8px}
+.tag{font:500 12px/1.2 var(--f-mono);padding:6px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);background:var(--bg)}
+
+/* sections */
+main section{padding-block:52px 4px;scroll-margin-top:64px}
+.sec-head{display:grid;gap:8px;margin-bottom:22px}
+.sec-head .num{font:600 12px var(--f-mono);color:var(--accent);letter-spacing:.08em;text-transform:uppercase}
+.sub{margin-top:30px;margin-bottom:12px}
+
+/* grids & cards */
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:960px){.g4,.g3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.g2,.g3,.g4{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;min-width:0;display:grid;gap:8px;align-content:start}
+.card h3{font-size:18px}
+.card .go{font:500 13px var(--f-body);margin-top:4px}
+.glance .k{font:600 12px var(--f-mono);color:var(--accent)}
+
+/* KPI strip */
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);border-radius:10px;background:var(--surface);overflow:hidden}
+.kpi{padding:14px 16px;border-right:1px solid var(--line);display:grid;gap:4px;align-content:start}
+.kpi:last-child{border-right:0}
+.kpi .v{font:600 22px/1.1 var(--f-mono);font-variant-numeric:tabular-nums}
+.kpi .d{font-size:13px;color:var(--muted)}
+@media (max-width:760px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi:nth-child(2){border-right:0}.kpi:nth-child(-n+2){border-bottom:1px solid var(--line)}}
+
+/* chips & badges */
+.chip{display:inline-flex;align-items:center;gap:6px;font:500 11.5px/1 var(--f-mono);padding:5px 8px;border-radius:999px;white-space:nowrap}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.c-cap{color:var(--cap);background:var(--cap-soft)}
+.c-per{color:var(--per);background:var(--per-soft)}
+.c-dec{color:var(--dec);background:var(--dec-soft)}
+.c-act{color:var(--act);background:var(--act-soft)}
+.c-os{color:var(--os);background:var(--os-soft)}
+.badge{display:inline-block;font:600 11px/1 var(--f-mono);padding:5px 7px;border-radius:5px;letter-spacing:.03em;white-space:nowrap}
+.b-ok{color:var(--ok);background:var(--ok-soft)}
+.b-test{color:var(--warn);background:var(--warn-soft)}
+.b-work{color:var(--act);background:var(--act-soft)}
+.b-no{color:var(--risk);background:var(--risk-soft)}
+.b-hi{color:var(--risk);background:var(--risk-soft)}
+.b-med{color:var(--warn);background:var(--warn-soft)}
+.b-lo{color:var(--ok);background:var(--ok-soft)}
+
+/* figures */
+figure{margin:0}
+.fig{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
+.fig .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.fig svg{display:block;width:100%;height:auto;min-width:880px}
+.fig figcaption{font-size:13.5px;color:var(--muted);margin-top:12px;max-width:95ch}
+.fig-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px}
+.btn{font:500 13px var(--f-body);color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:7px;padding:7px 12px;cursor:pointer}
+.fig-tools[hidden]{display:none}.btn:hover{border-color:var(--muted)}
+.scroll-hint{display:none;font-size:12.5px;color:var(--muted);margin-bottom:8px}
+@media (max-width:900px){.scroll-hint{display:block}}
+
+/* tables */
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+.tw table{min-width:760px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{font:600 11.5px/1.3 var(--f-mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--surface-2)}
+tbody tr:last-child td{border-bottom:0}
+td.nw{white-space:nowrap}
+td .chip,td .badge{vertical-align:1px}
+
+/* decisions */
+.adr{display:grid;gap:12px;counter-reset:adr}
+.adr li{list-style:none;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;grid-template-columns:44px minmax(0,1fr);gap:4px 12px}
+.adr li+li{margin-top:0}
+.adr .id{font:600 12px/1.6 var(--f-mono);color:var(--accent);grid-row:span 3}
+.adr h4{font-size:16.5px}
+.adr p{font-size:14.5px}
+.adr .alt{color:var(--muted);font-size:13.5px}
+.adr{padding:0}
+</style>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="AirTouch, back to top">
+      <svg width="24" height="24" viewBox="0 0 26 26" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 23 6.5 17 3.5 12"/><path d="M13 23 9.5 13.5 8.5 5.5"/><path d="M13 23V12.5 3.5"/><path d="M13 23 16.5 13.5 17.8 6"/><path d="M13 23 19.5 15.5 22.5 11"/></g><g fill="var(--accent)"><circle cx="3.5" cy="12" r="2"/><circle cx="8.5" cy="5.5" r="2"/><circle cx="13" cy="3.5" r="2"/><circle cx="17.8" cy="6" r="2"/><circle cx="22.5" cy="11" r="2"/></g></svg>
+      AirTouch
+    </a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#architecture">Architecture</a>
+      <a href="#workflow">Workflow</a>
+      <a href="#pipeline">Pipeline</a>
+      <a href="#roadmap">Build order</a>
+      <a href="#components">Components</a>
+      <a href="#gestures">Gestures</a>
+      <a href="#platform">Permissions</a>
+      <a href="#testing">Testing</a>
+      <a href="#risks">Risks</a>
+      <a href="#structure">Structure</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero" id="top">
+  <div class="wrap">
+    <p class="eyebrow">Project plan · Android · v1.1 · 25 Oct 2026</p>
+    <h1>AirTouch project blueprint</h1>
+    <p class="lead">AirTouch lets people use an Android phone without touching the screen. The front camera watches the user's hand, MediaPipe finds 21 landmarks on it in every frame, Kotlin logic turns their movement into gestures, and an AccessibilityService performs the matching swipe, tap or navigation in whatever app is open. This page is the plan to build it, written before any code.</p>
+    <div class="meta">
+      <span class="tag">First device: Redmi Note 8 Pro · Android 11 · MIUI 12.5</span>
+      <span class="tag">Helio G90T · Mali-G76 MC4 · 1080 × 2340</span>
+      <span class="tag">Kotlin · CameraX · MediaPipe · AccessibilityService</span>
+      <span class="tag">Offline · no backend · $0 tooling</span>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+  <section id="glance" aria-labelledby="glance-h">
+    <div class="sec-head">
+      <p class="num">Summary</p>
+      <h2 id="glance-h">The four answers</h2>
+    </div>
+    <div class="grid g4 glance">
+      <article class="card">
+        <p class="k">1 · Architecture</p>
+        <h3>One on-device pipeline</h3>
+        <p class="small">Five layers: capture, perceive, decide, act, plus control and settings. The live pipeline runs inside AirTouch's AccessibilityService, which becomes a camera foreground service while detection is on.</p>
+        <a class="go" href="#architecture">Read the decisions</a>
+      </article>
+      <article class="card">
+        <p class="k">2 · Pipeline</p>
+        <h3>16 stages, each testable</h3>
+        <p class="small">From feasibility to a signed APK. Every stage lists its inputs, processing, outputs, dependencies and a measurable exit test.</p>
+        <a class="go" href="#pipeline">See all 16 stages</a>
+      </article>
+      <article class="card">
+        <p class="k">3 · HLA image</p>
+        <h3>Camera to screen in one picture</h3>
+        <p class="small">Front camera, CameraX, MediaPipe, gesture engine, safety guard, action mapper, AccessibilityService and the app on screen, with what passes between them. Each part is tagged with the phase that builds it, from P0 setup to P5.</p>
+        <a class="go" href="#hla">Open the diagram</a>
+      </article>
+      <article class="card">
+        <p class="k">4 · Build order</p>
+        <h3>Riskiest work first</h3>
+        <p class="small">Phase 0 sets up the project and runs three feasibility spikes. Then the gesture engine, tested on recorded hand traces, and a dry-run mode before any real taps. Live cross-app control comes last. About 12 weeks for one developer.</p>
+        <a class="go" href="#roadmap">See the order</a>
+      </article>
+    </div>
+    <p class="eyebrow sub">Targets on the Redmi Note 8 Pro, measured in Phase 0 and again in Phase 7</p>
+    <div class="kpis">
+      <div class="kpi"><span class="v">≤ 150 ms</span><span class="d">from the end of a hand motion to the action being dispatched (p95)</span></div>
+      <div class="kpi"><span class="v">≥ 15 fps</span><span class="d">hand tracking sustained for 30 minutes</span></div>
+      <div class="kpi"><span class="v">≤ 1 / 15 min</span><span class="d">unintended actions during normal hand activity</span></div>
+      <div class="kpi"><span class="v">≤ 8 % / h</span><span class="d">battery used by AirTouch during active use</span></div>
+    </div>
+  </section>
+
+<style>
+.phase-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.pbtn{font:500 12.5px var(--f-body);color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 11px;cursor:pointer}
+.pbtn b{font:600 11.5px var(--f-mono);color:var(--ink);margin-right:5px}
+.pbtn:hover{border-color:var(--muted)}
+.pbtn[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.pbtn[aria-pressed="true"] b{color:var(--surface)}
+.phase-note{font-size:13.5px;margin-bottom:12px;max-width:95ch}
+#hla-svg [data-phase]{transition:opacity .2s}
+#hla-svg.stepping [data-phase].later{opacity:.1}
+#hla-svg.stepping [data-phase].now .d-box{stroke-width:2.6}
+@media (prefers-reduced-motion:reduce){#hla-svg [data-phase]{transition:none}}
+</style>
+
+<style id="svg-css">
+.d-box{stroke-width:1.4}
+.d-os{fill:var(--os-soft);stroke:var(--os)}
+.d-cap{fill:var(--cap-soft);stroke:var(--cap)}
+.d-per{fill:var(--per-soft);stroke:var(--per)}
+.d-dec{fill:var(--dec-soft);stroke:var(--dec)}
+.d-act{fill:var(--act-soft);stroke:var(--act)}
+.d-sat{fill:var(--surface);stroke:var(--os)}
+.d-user{fill:var(--surface);stroke:var(--per);stroke-dasharray:5 4}
+.d-bound{fill:none;stroke:var(--muted);stroke-width:1.2;stroke-dasharray:7 5}
+.d-edge{fill:none;stroke:var(--ink);stroke-width:1.4}
+.d-loop{fill:none;stroke:var(--muted);stroke-width:1.3;stroke-dasharray:5 4}
+.d-ah{fill:var(--ink)}
+.d-ahm{fill:var(--muted)}
+.d-dot{fill:var(--muted)}
+.d-t{fill:var(--ink);font:600 13px var(--f-body)}
+.d-s{fill:var(--muted);font:400 11px var(--f-body)}
+.d-l{fill:var(--muted);font:500 10.5px var(--f-mono)}
+.d-k{fill:var(--muted);font:600 10.5px var(--f-mono);letter-spacing:.08em}
+.d-y{fill:var(--ok);font:600 10.5px var(--f-mono)}
+.d-n{fill:var(--risk);font:600 10.5px var(--f-mono)}
+.d-pb{fill:var(--ink)}
+.d-pbt{fill:var(--surface);font:600 9.5px var(--f-mono)}
+</style>
+
+  <section id="architecture" aria-labelledby="arch-h">
+    <div class="sec-head">
+      <p class="num">01 · Recommended architecture</p>
+      <h2 id="arch-h">One process, five layers, no server</h2>
+      <p class="lead">Each layer is its own component with a typed output, so detection, classification, mapping and screen control can be tested and replaced separately. Everything runs on the phone. Camera frames stay in memory and are never stored or sent anywhere.</p>
+    </div>
+
+    <ol class="adr">
+      <li><span class="id">AD-1</span><h4>Run the live pipeline inside the AccessibilityService</h4>
+        <p>Android binds this service for as long as the user keeps AirTouch enabled, so detection keeps running while they move between Instagram, YouTube and other apps. Google's open-source Project Gameface uses the same pattern: CameraX and MediaPipe running inside an AccessibilityService. AirTouch adds one documented safeguard. Detection always starts from a visible surface (the app, the Quick Settings tile or the notification), and the service then calls <code>startForeground()</code> with type <code>camera</code>. That foreground service keeps camera access after the user leaves the app and shows a notification with Pause and Stop.</p>
+        <p class="alt">Fallback if a device refuses: a separate camera foreground service started from the app, sending events to the AccessibilityService over an in-process event bus. The Phase 0 spike decides which one to use, on the Redmi Note 8 Pro and on one Android 14+ phone.</p></li>
+      <li><span class="id">AD-2</span><h4>Keep the gesture engine in pure Kotlin, in its own module</h4>
+        <p>The <code>gesture-engine</code> module has no Android imports. Unit tests replay recorded landmark traces on a laptop, so thresholds are tuned in seconds without a phone, and the build stops anyone from adding a platform dependency.</p></li>
+      <li><span class="id">AD-3</span><h4>Recognise gestures with rules first, behind an interface</h4>
+        <p>Swipes, pinch and fist are classified with geometry and timing rules: deterministic, explainable, and they need no training data. They sit behind a <code>GestureClassifier</code> interface, so a trained model can replace or join them later without touching the other layers.</p></li>
+      <li><span class="id">AD-4</span><h4>One physical gesture fires at most one action</h4>
+        <p>A safety guard sits between the classifier and the mapper: an arming state, confidence and hand-size gates, voting across frames, a cooldown, and suppression of the return stroke that follows every swipe.</p></li>
+      <li><span class="id">AD-5</span><h4>Tap with an air cursor and confirm with a pinch</h4>
+        <p>Fingertip position alone is too unsteady to pick a tap target. AirTouch shows a smoothed cursor and taps when the user pinches. The tap lands where the cursor was about 120 ms before the pinch began, because closing the fingers pulls the index tip off target.</p></li>
+      <li><span class="id">AD-6</span><h4>Draw feedback as an accessibility overlay</h4>
+        <p><code>TYPE_ACCESSIBILITY_OVERLAY</code> needs no "Display over other apps" permission, and Android 12+ treats it as trusted, so injected touches still reach the app underneath.</p></li>
+      <li><span class="id">AD-7</span><h4>Stay offline by design</h4>
+        <p>The merged manifest declares no <code>INTERNET</code> permission. The models ship inside the APK, settings live in Jetpack DataStore, and dependencies are wired by hand in an <code>AppGraph</code> instead of a DI framework.</p></li>
+      <li><span class="id">AD-8</span><h4>Hands or face, one at a time</h4>
+        <p>AirTouch is driven either by hand gestures or by face gestures (quick nods and turns, eyes closed, eyebrow raises, a kiss), never both at once. Turning on face gestures turns hand gestures off, and turning on hand gestures turns face gestures off. The choice is one DataStore setting, <code>gestureMode</code>, with hands as the default. Only the chosen mode's MediaPipe model is loaded (Hand Landmarker or Face Landmarker), so it gets every camera frame and the GPU to itself, and one input can never set off the other, such as a hand raised in front of the face or a nod during a flick. Hands-free mode and practice mode both follow the setting, and changing it restarts a running session in the new mode.</p>
+        <p class="alt">Consequences: a ringing call is answered with ✋ and rejected with ✊ in hand mode, and with the left or right eyebrow raised twice in face mode. In face mode, pause and resume come from the notification, since 👎 is a hand gesture. The status pill and the notification name the active mode.</p></li>
+    </ol>
+
+    <h3 class="sub" id="hla">High-level architecture (HLA)</h3>
+    <figure class="fig">
+      <div class="phase-bar" role="group" aria-label="Show the architecture at the end of a build phase">
+        <button type="button" class="pbtn" data-show="all" aria-pressed="true">All phases</button>
+        <button type="button" class="pbtn" data-show="0" aria-pressed="false"><b>P0</b>Setup</button>
+        <button type="button" class="pbtn" data-show="1" aria-pressed="false"><b>P1</b>Capture</button>
+        <button type="button" class="pbtn" data-show="2" aria-pressed="false"><b>P2</b>Perception</button>
+        <button type="button" class="pbtn" data-show="3" aria-pressed="false"><b>P3</b>Decision</button>
+        <button type="button" class="pbtn" data-show="4" aria-pressed="false"><b>P4</b>Action</button>
+        <button type="button" class="pbtn" data-show="5" aria-pressed="false"><b>P5</b>Always-on</button>
+        <button type="button" class="pbtn" data-show="6" aria-pressed="false"><b>P6–P9</b>Polish and release</button>
+      </div>
+      <p class="phase-note" id="hla-phase-note" aria-live="polite">Showing the finished architecture. Each badge names the phase that builds that part. Pick a phase to see what exists at the end of it.</p>
+      <p class="scroll-hint">Scroll sideways to see the whole diagram.</p>
+      <div class="scroll">
+<svg id="hla-svg" viewBox="0 0 1120 790" role="img" aria-label="AirTouch high-level architecture, split into build phases. The user's hand is seen by the front camera. Frames flow down through CameraX (phase 1), MediaPipe Hand Landmarker (phase 2), the gesture engine and safety guard (phase 3), and the action mapper and action executor (phase 4) inside the AirTouch process, then through the Android input system to the app on screen. Phase 0 sets up the process, the model file and the settings store. Phase 5 adds the pipeline controller and user controls.">
+  <defs>
+    <marker id="hla-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-ah"/></marker>
+  </defs>
+  <text x="24" y="26" class="d-k">ANDROID SYSTEM · OUTSIDE AIRTOUCH</text>
+
+  <!-- Android platform: exists before any phase -->
+  <g data-phase="os">
+    <rect x="40" y="40" width="260" height="50" rx="8" class="d-box d-os"/>
+    <text x="170" y="61" text-anchor="middle" class="d-t">System events</text>
+    <text x="170" y="78" text-anchor="middle" class="d-s">screen on/off · camera busy · thermal</text>
+    <rect x="400" y="40" width="320" height="50" rx="8" class="d-box d-os"/>
+    <text x="560" y="61" text-anchor="middle" class="d-t">Front camera · Android camera service</text>
+    <text x="560" y="78" text-anchor="middle" class="d-s">20 MP sensor → Camera2 HAL</text>
+    <rect x="820" y="40" width="260" height="50" rx="8" class="d-box d-user"/>
+    <text x="950" y="61" text-anchor="middle" class="d-t">User's hand in the air</text>
+    <text x="950" y="78" text-anchor="middle" class="d-s">30–80 cm from the front camera</text>
+    <line x1="820" y1="65" x2="722" y2="65" class="d-edge" marker-end="url(#hla-ah)"/>
+    <text x="771" y="58" text-anchor="middle" class="d-l">air gesture</text>
+    <rect x="400" y="694" width="320" height="50" rx="8" class="d-box d-os"/>
+    <text x="560" y="715" text-anchor="middle" class="d-t">Android input system</text>
+    <text x="560" y="732" text-anchor="middle" class="d-s">accessibility framework → InputDispatcher</text>
+    <rect x="820" y="694" width="260" height="50" rx="8" class="d-box d-os"/>
+    <text x="950" y="715" text-anchor="middle" class="d-t">Foreground app on screen</text>
+    <text x="950" y="732" text-anchor="middle" class="d-s">Instagram Reels · YouTube Shorts</text>
+  </g>
+
+  <!-- P0 Setup: process, manifest, model, settings store -->
+  <g data-phase="0">
+    <rect x="20" y="118" width="1080" height="552" rx="14" class="d-bound"/>
+    <text x="40" y="142" class="d-k">AIRTOUCH APP PROCESS</text>
+    <text x="40" y="158" class="d-s">on-device · no INTERNET permission</text>
+    <text x="1080" y="142" text-anchor="end" class="d-k">LIVE PIPELINE HOST</text>
+    <text x="1080" y="158" text-anchor="end" class="d-s">AirTouchAccessibilityService · foreground, type camera</text>
+    <rect x="820" y="264" width="260" height="50" rx="8" class="d-box d-sat"/>
+    <text x="950" y="285" text-anchor="middle" class="d-t">Model file</text>
+    <text x="950" y="302" text-anchor="middle" class="d-s">hand_landmarker.task in assets</text>
+    <rect x="820" y="344" width="260" height="210" rx="8" class="d-box d-sat"/>
+    <text x="950" y="372" text-anchor="middle" class="d-t">Settings store</text>
+    <text x="950" y="390" text-anchor="middle" class="d-s">Jetpack DataStore · on device</text>
+    <text x="950" y="432" text-anchor="middle" class="d-s">sensitivity &amp; thresholds</text>
+    <text x="950" y="452" text-anchor="middle" class="d-s">cooldowns &amp; guards</text>
+    <text x="950" y="472" text-anchor="middle" class="d-s">gesture → action maps</text>
+    <text x="950" y="492" text-anchor="middle" class="d-s">per-app profiles · feedback</text>
+    <rect x="830" y="256" width="26" height="16" rx="8" class="d-pb"/><text x="843" y="267.5" text-anchor="middle" class="d-pbt">P0</text>
+    <rect x="830" y="336" width="26" height="16" rx="8" class="d-pb"/><text x="843" y="347.5" text-anchor="middle" class="d-pbt">P0</text>
+  </g>
+
+  <!-- P1 Capture -->
+  <g data-phase="1">
+    <line x1="560" y1="90" x2="560" y2="182" class="d-edge" marker-end="url(#hla-ah)"/>
+    <text x="572" y="110" class="d-l">frames · 640×480 · 15–20 fps</text>
+    <rect x="400" y="184" width="320" height="50" rx="8" class="d-box d-cap"/>
+    <text x="560" y="205" text-anchor="middle" class="d-t">CameraX ImageAnalysis</text>
+    <text x="560" y="222" text-anchor="middle" class="d-s">rotate · mirror · throttle → MPImage</text>
+    <rect x="410" y="176" width="26" height="16" rx="8" class="d-pb"/><text x="423" y="187.5" text-anchor="middle" class="d-pbt">P1</text>
+  </g>
+
+  <!-- P2 Perception -->
+  <g data-phase="2">
+    <line x1="560" y1="234" x2="560" y2="262" class="d-edge" marker-end="url(#hla-ah)"/>
+    <text x="572" y="253" class="d-l">MPImage + timestamp</text>
+    <rect x="400" y="264" width="320" height="50" rx="8" class="d-box d-per"/>
+    <text x="560" y="285" text-anchor="middle" class="d-t">MediaPipe Hand Landmarker</text>
+    <text x="560" y="302" text-anchor="middle" class="d-s">LIVE_STREAM · on-device · CPU or GPU</text>
+    <line x1="820" y1="289" x2="722" y2="289" class="d-edge" marker-end="url(#hla-ah)"/>
+    <text x="771" y="282" text-anchor="middle" class="d-l">loaded once</text>
+    <rect x="40" y="344" width="260" height="50" rx="8" class="d-box d-sat"/>
+    <text x="170" y="365" text-anchor="middle" class="d-t">Diagnostics</text>
+    <text x="170" y="382" text-anchor="middle" class="d-s">fps · latency · trace recorder</text>
+    <rect x="410" y="256" width="26" height="16" rx="8" class="d-pb"/><text x="423" y="267.5" text-anchor="middle" class="d-pbt">P2</text>
+    <rect x="50" y="336" width="26" height="16" rx="8" class="d-pb"/><text x="63" y="347.5" text-anchor="middle" class="d-pbt">P2</text>
+  </g>
+
+  <!-- P3 Decision -->
+  <g data-phase="3">
+    <line x1="560" y1="314" x2="560" y2="342" class="d-edge" marker-end="url(#hla-ah)"/>
+    <text x="572" y="333" class="d-l">21 landmarks + handedness</text>
+    <rect x="400" y="344" width="320" height="50" rx="8" class="d-box d-dec"/>
+    <text x="560" y="365" text-anchor="middle" class="d-t">Gesture engine</text>
+    <text x="560" y="382" text-anchor="middle" class="d-s">normalize · One-Euro smoothing · classify</text>
+    <line x1="560" y1="394" x2="560" y2="422" class="d-edge" marker-end="url(#hla-ah)"/>
+    <text x="572" y="413" class="d-l">gesture candidate</text>
+    <rect x="400" y="424" width="320" height="50" rx="8" class="d-box d-dec"/>
+    <text x="560" y="445" text-anchor="middle" class="d-t">Safety guard</text>
+    <text x="560" y="462" text-anchor="middle" class="d-s">arming · confidence · cooldown · return stroke</text>
+    <line x1="400" y1="369" x2="302" y2="369" class="d-edge" marker-end="url(#hla-ah)"/>
+    <text x="350" y="362" text-anchor="middle" class="d-l">metrics</text>
+    <line x1="820" y1="369" x2="722" y2="369" class="d-edge" marker-end="url(#hla-ah)"/>
+    <text x="771" y="362" text-anchor="middle" class="d-l">thresholds</text>
+    <line x1="820" y1="449" x2="722" y2="449" class="d-edge" marker-end="url(#hla-ah)"/>
+    <text x="771" y="442" text-anchor="middle" class="d-l">cooldowns</text>
+    <rect x="410" y="336" width="26" height="16" rx="8" class="d-pb"/><text x="423" y="347.5" text-anchor="middle" class="d-pbt">P3</text>
+    <rect x="410" y="416" width="26" height="16" rx="8" class="d-pb"/><text x="423" y="427.5" text-anchor="middle" class="d-pbt">P3</text>
+  </g>
+
+  <!-- P4 Action -->
+  <g data-phase="4">
+    <line x1="560" y1="474" x2="560" y2="502" class="d-edge" marker-end="url(#hla-ah)"/>
+    <text x="572" y="493" class="d-l">one event per motion</text>
+    <rect x="400" y="504" width="320" height="50" rx="8" class="d-box d-act"/>
+    <text x="560" y="525" text-anchor="middle" class="d-t">Action mapper</text>
+    <text x="560" y="542" text-anchor="middle" class="d-s">gesture → ScreenAction via per-app profile</text>
+    <line x1="560" y1="554" x2="560" y2="582" class="d-edge" marker-end="url(#hla-ah)"/>
+    <text x="572" y="573" class="d-l">ScreenAction</text>
+    <rect x="400" y="584" width="320" height="50" rx="8" class="d-box d-act"/>
+    <text x="560" y="605" text-anchor="middle" class="d-t">Action executor (AccessibilityService)</text>
+    <text x="560" y="622" text-anchor="middle" class="d-s">dispatchGesture · performGlobalAction</text>
+    <line x1="560" y1="634" x2="560" y2="692" class="d-edge" marker-end="url(#hla-ah)"/>
+    <text x="572" y="656" class="d-l">GestureDescription strokes</text>
+    <line x1="820" y1="529" x2="722" y2="529" class="d-edge" marker-end="url(#hla-ah)"/>
+    <text x="771" y="522" text-anchor="middle" class="d-l">gesture map</text>
+    <rect x="820" y="584" width="260" height="50" rx="8" class="d-box d-sat"/>
+    <text x="950" y="605" text-anchor="middle" class="d-t">Overlay HUD &amp; air cursor</text>
+    <text x="950" y="622" text-anchor="middle" class="d-s">TYPE_ACCESSIBILITY_OVERLAY</text>
+    <line x1="720" y1="609" x2="818" y2="609" class="d-edge" marker-end="url(#hla-ah)"/>
+    <text x="771" y="602" text-anchor="middle" class="d-l">HUD state</text>
+    <rect x="40" y="504" width="260" height="50" rx="8" class="d-box d-sat"/>
+    <text x="170" y="525" text-anchor="middle" class="d-t">Foreground app tracker</text>
+    <text x="170" y="542" text-anchor="middle" class="d-s">window events → package name</text>
+    <line x1="300" y1="529" x2="398" y2="529" class="d-edge" marker-end="url(#hla-ah)"/>
+    <text x="350" y="522" text-anchor="middle" class="d-l">active app</text>
+    <path d="M400 719 H270 V556" class="d-edge" marker-end="url(#hla-ah)"/>
+    <text x="282" y="640" class="d-l">window events</text>
+    <line x1="720" y1="719" x2="818" y2="719" class="d-edge" marker-end="url(#hla-ah)"/>
+    <text x="771" y="712" text-anchor="middle" class="d-l">MotionEvents</text>
+    <rect x="410" y="496" width="26" height="16" rx="8" class="d-pb"/><text x="423" y="507.5" text-anchor="middle" class="d-pbt">P4</text>
+    <rect x="410" y="576" width="26" height="16" rx="8" class="d-pb"/><text x="423" y="587.5" text-anchor="middle" class="d-pbt">P4</text>
+    <rect x="830" y="576" width="26" height="16" rx="8" class="d-pb"/><text x="843" y="587.5" text-anchor="middle" class="d-pbt">P4</text>
+    <rect x="50" y="496" width="26" height="16" rx="8" class="d-pb"/><text x="63" y="507.5" text-anchor="middle" class="d-pbt">P4</text>
+  </g>
+
+  <!-- P5 Always-on -->
+  <g data-phase="5">
+    <line x1="270" y1="90" x2="270" y2="182" class="d-edge" marker-end="url(#hla-ah)"/>
+    <text x="282" y="110" class="d-l">lifecycle signals</text>
+    <rect x="40" y="184" width="260" height="50" rx="8" class="d-box d-sat"/>
+    <text x="170" y="205" text-anchor="middle" class="d-t">Pipeline controller</text>
+    <text x="170" y="222" text-anchor="middle" class="d-s">Active · Standby · Suspended · Off</text>
+    <line x1="300" y1="209" x2="398" y2="209" class="d-edge" marker-end="url(#hla-ah)"/>
+    <text x="350" y="202" text-anchor="middle" class="d-l">start · fps</text>
+    <rect x="40" y="264" width="260" height="50" rx="8" class="d-box d-sat"/>
+    <text x="170" y="285" text-anchor="middle" class="d-t">User controls</text>
+    <text x="170" y="302" text-anchor="middle" class="d-s">app · notification · tile · fist hold</text>
+    <line x1="270" y1="264" x2="270" y2="236" class="d-edge" marker-end="url(#hla-ah)"/>
+    <text x="282" y="253" class="d-l">pause · resume</text>
+    <rect x="50" y="176" width="26" height="16" rx="8" class="d-pb"/><text x="63" y="187.5" text-anchor="middle" class="d-pbt">P5</text>
+    <rect x="50" y="256" width="26" height="16" rx="8" class="d-pb"/><text x="63" y="267.5" text-anchor="middle" class="d-pbt">P5</text>
+  </g>
+
+  <!-- legend -->
+  <rect x="40" y="764" width="12" height="12" rx="3" class="d-box d-cap"/><text x="58" y="774" class="d-s">Capture</text>
+  <rect x="130" y="764" width="12" height="12" rx="3" class="d-box d-per"/><text x="148" y="774" class="d-s">Perception</text>
+  <rect x="235" y="764" width="12" height="12" rx="3" class="d-box d-dec"/><text x="253" y="774" class="d-s">Decision</text>
+  <rect x="330" y="764" width="12" height="12" rx="3" class="d-box d-act"/><text x="348" y="774" class="d-s">Action</text>
+  <rect x="415" y="764" width="12" height="12" rx="3" class="d-box d-os"/><text x="433" y="774" class="d-s">Android system</text>
+  <rect x="545" y="764" width="12" height="12" rx="3" class="d-box d-sat"/><text x="563" y="774" class="d-s">Support component</text>
+  <line x1="690" y1="770" x2="720" y2="770" class="d-bound"/><text x="728" y="774" class="d-s">AirTouch process boundary</text>
+  <rect x="900" y="762" width="26" height="16" rx="8" class="d-pb"/><text x="913" y="773.5" text-anchor="middle" class="d-pbt">P0</text><text x="932" y="774" class="d-s">build phase, P0 setup to P5</text>
+</svg>
+      </div>
+      <figcaption>Frames cross into AirTouch at the top and leave as touch strokes at the bottom. Everything in the dashed boundary runs in one app process with no network access. The left column controls when the pipeline runs; the right column holds what it reads (the model, the settings) and what the user sees (the overlay). Badges show the build phase for each part. Grey boxes come with Android and need no build phase.</figcaption>
+      <div class="fig-tools" id="hla-save" hidden>
+        <button class="btn" type="button" id="hla-svg-btn">Save HLA as SVG</button>
+        <button class="btn" type="button" id="hla-png-btn">Save HLA as PNG</button>
+        <span class="small muted" id="hla-save-msg" aria-live="polite"></span>
+      </div>
+    </figure>
+
+    <h3 class="sub" id="hla-phases">The HLA, phase by phase</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Phase</th><th>Parts of the HLA it builds</th><th>Stages</th><th>Weeks</th><th>Working at the end</th></tr></thead>
+        <tbody>
+          <tr><td class="nw"><strong>P0</strong> Setup</td><td>Tools and phone ready; the two Gradle modules; app process and manifest (services, permissions, no INTERNET); bundled model file; empty settings store; three throwaway feasibility spikes</td><td class="nw">01–02</td><td class="nw">W1–2</td><td>App installs on the Note 8 Pro; spikes A, B and C pass</td></tr>
+          <tr><td class="nw"><strong>P1</strong> Capture</td><td>CameraX ImageAnalysis with rotate, mirror and throttle; camera permission flow</td><td class="nw">03–04</td><td class="nw">W3</td><td>Correctly oriented front-camera frames in practice mode</td></tr>
+          <tr><td class="nw"><strong>P2</strong> Perception</td><td>MediaPipe Hand Landmarker loading the bundled model; diagnostics and trace recorder</td><td class="nw">05</td><td class="nw">W4</td><td>21 landmarks drawn live at ≥ 15 fps; first labelled traces</td></tr>
+          <tr><td class="nw"><strong>P3</strong> Decision</td><td>Gesture engine and safety guard, reading thresholds and cooldowns; dry-run mode</td><td class="nw">06–07</td><td class="nw">W4–6</td><td>Gestures recognised and logged, with nothing sent to the screen</td></tr>
+          <tr><td class="nw"><strong>P4</strong> Action</td><td>Action mapper, AccessibilityService executor, overlay HUD and cursor, foreground-app tracker</td><td class="nw">08–10</td><td class="nw">W6–7</td><td>One swipe advances one Instagram Reel</td></tr>
+          <tr><td class="nw"><strong>P5</strong> Always-on</td><td>Pipeline controller, user controls, system-event handling, camera foreground service</td><td class="nw">11</td><td class="nw">W8</td><td>Hands-free control across app switches for 60 min</td></tr>
+          <tr><td class="nw"><strong>P6–P9</strong></td><td>No new parts. Setup and settings screens finish the user controls, then the whole diagram is optimised, validated on devices and released</td><td class="nw">12–16</td><td class="nw">W5–12</td><td>v1.0 APK on GitHub Releases</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="workflow" aria-labelledby="wf-h">
+    <div class="sec-head">
+      <p class="num">02 · End-to-end workflow</p>
+      <h2 id="wf-h">From one camera frame to one screen action</h2>
+      <p class="lead">Every frame runs the left column. Only a steady, armed hand reaches the right column, and only a gesture that passes every guard reaches the screen. Every other path drops the frame and waits for the next one, so the loop never blocks.</p>
+    </div>
+    <figure class="fig">
+      <p class="scroll-hint">Scroll sideways to see the whole flowchart.</p>
+      <div class="scroll">
+<svg viewBox="0 0 1120 684" role="img" aria-label="Flowchart. Start detection, then for each camera frame: detect landmarks; if no hand, reset and lower the frame rate; if the detection is invalid, discard it; smooth and extract features; if the hand is not armed, keep arming. When armed: classify; if there is no candidate, wait; if guards fail, reject and log; map to an action; a pause toggle switches standby; if the accessibility service is off, prompt the user; otherwise dispatch the gesture, give feedback and cool down. All side paths return to the next frame.">
+  <defs>
+    <marker id="fc-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-ah"/></marker>
+    <marker id="fc-ahm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-ahm"/></marker>
+  </defs>
+
+  <!-- start -->
+  <rect x="290" y="16" width="220" height="44" rx="22" class="d-box d-sat"/>
+  <text x="400" y="35" text-anchor="middle" class="d-t">Start detection</text>
+  <text x="400" y="51" text-anchor="middle" class="d-s">app · Quick Settings tile · notification</text>
+  <line x1="510" y1="38" x2="608" y2="38" class="d-loop" marker-end="url(#fc-ahm)"/>
+  <text x="559" y="31" text-anchor="middle" class="d-n">not ready</text>
+  <rect x="610" y="16" width="220" height="44" rx="8" class="d-box d-sat"/>
+  <text x="720" y="35" text-anchor="middle" class="d-t">Onboarding wizard</text>
+  <text x="720" y="51" text-anchor="middle" class="d-s">grant camera · enable accessibility</text>
+  <line x1="400" y1="60" x2="400" y2="108" class="d-edge" marker-end="url(#fc-ah)"/>
+  <text x="408" y="76" class="d-y">ready</text>
+
+  <!-- loop bus -->
+  <path d="M12 484 V86 H394" class="d-loop"/>
+  <path d="M1108 640 V86 H406" class="d-loop"/>
+  <circle cx="400" cy="86" r="4" class="d-dot"/>
+  <text x="560" y="80" text-anchor="middle" class="d-l">↻ back to the next frame</text>
+
+  <!-- column A -->
+  <rect x="290" y="110" width="220" height="40" rx="8" class="d-box d-cap"/>
+  <text x="400" y="127" text-anchor="middle" class="d-t">Next camera frame</text>
+  <text x="400" y="143" text-anchor="middle" class="d-s">CameraX · keep only the latest</text>
+  <line x1="400" y1="150" x2="400" y2="174" class="d-edge" marker-end="url(#fc-ah)"/>
+
+  <rect x="290" y="176" width="220" height="40" rx="8" class="d-box d-per"/>
+  <text x="400" y="193" text-anchor="middle" class="d-t">Detect landmarks</text>
+  <text x="400" y="209" text-anchor="middle" class="d-s">rotate · mirror → MediaPipe</text>
+  <line x1="400" y1="216" x2="400" y2="232" class="d-edge" marker-end="url(#fc-ah)"/>
+
+  <polygon points="400,234 480,262 400,290 320,262" class="d-box d-dec"/>
+  <text x="400" y="266" text-anchor="middle" class="d-t">Hand found?</text>
+  <line x1="400" y1="290" x2="400" y2="314" class="d-edge" marker-end="url(#fc-ah)"/>
+  <text x="408" y="306" class="d-y">yes</text>
+
+  <polygon points="400,316 480,344 400,372 320,344" class="d-box d-dec"/>
+  <text x="400" y="348" text-anchor="middle" class="d-t">Valid detection?</text>
+  <line x1="400" y1="372" x2="400" y2="396" class="d-edge" marker-end="url(#fc-ah)"/>
+  <text x="408" y="388" class="d-y">yes</text>
+
+  <rect x="290" y="398" width="220" height="40" rx="8" class="d-box d-dec"/>
+  <text x="400" y="415" text-anchor="middle" class="d-t">Smooth + features</text>
+  <text x="400" y="431" text-anchor="middle" class="d-s">One-Euro · finger states · velocity</text>
+  <line x1="400" y1="438" x2="400" y2="454" class="d-edge" marker-end="url(#fc-ah)"/>
+
+  <polygon points="400,456 480,484 400,512 320,484" class="d-box d-dec"/>
+  <text x="400" y="488" text-anchor="middle" class="d-t">Armed?</text>
+  <path d="M400 512 V540 H560 V130 H608" class="d-edge" marker-end="url(#fc-ah)"/>
+  <text x="408" y="532" class="d-y">yes</text>
+
+  <!-- column A rejects -->
+  <rect x="24" y="234" width="220" height="56" rx="8" class="d-box d-sat"/>
+  <text x="134" y="251" text-anchor="middle" class="d-t">No hand</text>
+  <text x="134" y="267" text-anchor="middle" class="d-s">reset tracker · hide cursor</text>
+  <text x="134" y="282" text-anchor="middle" class="d-s">3 s → 8 fps · 2 min → standby</text>
+  <line x1="320" y1="262" x2="246" y2="262" class="d-edge" marker-end="url(#fc-ah)"/>
+  <text x="283" y="255" text-anchor="middle" class="d-n">no</text>
+
+  <rect x="24" y="316" width="220" height="56" rx="8" class="d-box d-sat"/>
+  <text x="134" y="333" text-anchor="middle" class="d-t">Discard frame</text>
+  <text x="134" y="349" text-anchor="middle" class="d-s">score &lt; 0.6 · hand too small</text>
+  <text x="134" y="364" text-anchor="middle" class="d-s">or outside the active zone</text>
+  <line x1="320" y1="344" x2="246" y2="344" class="d-edge" marker-end="url(#fc-ah)"/>
+  <text x="283" y="337" text-anchor="middle" class="d-n">no</text>
+
+  <rect x="24" y="456" width="220" height="56" rx="8" class="d-box d-sat"/>
+  <text x="134" y="473" text-anchor="middle" class="d-t">Keep arming</text>
+  <text x="134" y="489" text-anchor="middle" class="d-s">open palm steady for 300 ms</text>
+  <text x="134" y="504" text-anchor="middle" class="d-s">HUD ring fills while arming</text>
+  <line x1="320" y1="484" x2="246" y2="484" class="d-edge" marker-end="url(#fc-ah)"/>
+  <text x="283" y="477" text-anchor="middle" class="d-n">no</text>
+
+  <path d="M24 262 H12 M24 344 H12 M24 484 H12" class="d-loop"/>
+
+  <!-- column B -->
+  <rect x="610" y="110" width="220" height="40" rx="8" class="d-box d-dec"/>
+  <text x="720" y="127" text-anchor="middle" class="d-t">Classify gesture</text>
+  <text x="720" y="143" text-anchor="middle" class="d-s">swipe ↑ ↓ ← → · pinch · fist</text>
+  <line x1="720" y1="150" x2="720" y2="166" class="d-edge" marker-end="url(#fc-ah)"/>
+
+  <polygon points="720,168 800,196 720,224 640,196" class="d-box d-dec"/>
+  <text x="720" y="200" text-anchor="middle" class="d-t">Candidate?</text>
+  <line x1="720" y1="224" x2="720" y2="248" class="d-edge" marker-end="url(#fc-ah)"/>
+  <text x="728" y="240" class="d-y">yes</text>
+  <line x1="800" y1="196" x2="1108" y2="196" class="d-loop"/>
+  <text x="822" y="189" class="d-n">no</text>
+  <text x="900" y="189" class="d-l">not a gesture yet</text>
+
+  <polygon points="720,250 800,278 720,306 640,278" class="d-box d-dec"/>
+  <text x="720" y="282" text-anchor="middle" class="d-t">Passes guards?</text>
+  <line x1="720" y1="306" x2="720" y2="330" class="d-edge" marker-end="url(#fc-ah)"/>
+  <text x="728" y="322" class="d-y">yes</text>
+
+  <rect x="610" y="332" width="220" height="40" rx="8" class="d-box d-act"/>
+  <text x="720" y="349" text-anchor="middle" class="d-t">Map to action</text>
+  <text x="720" y="365" text-anchor="middle" class="d-s">active profile → ScreenAction</text>
+  <line x1="720" y1="372" x2="720" y2="388" class="d-edge" marker-end="url(#fc-ah)"/>
+
+  <polygon points="720,390 800,418 720,446 640,418" class="d-box d-act"/>
+  <text x="720" y="422" text-anchor="middle" class="d-t">Pause toggle?</text>
+  <line x1="720" y1="446" x2="720" y2="470" class="d-edge" marker-end="url(#fc-ah)"/>
+  <text x="728" y="462" class="d-n">no</text>
+
+  <polygon points="720,472 800,500 720,528 640,500" class="d-box d-act"/>
+  <text x="720" y="504" text-anchor="middle" class="d-t">Accessibility on?</text>
+  <line x1="720" y1="528" x2="720" y2="552" class="d-edge" marker-end="url(#fc-ah)"/>
+  <text x="728" y="544" class="d-y">yes</text>
+
+  <rect x="610" y="554" width="220" height="40" rx="8" class="d-box d-act"/>
+  <text x="720" y="571" text-anchor="middle" class="d-t">Dispatch gesture</text>
+  <text x="720" y="587" text-anchor="middle" class="d-s">safe-zone screen coordinates</text>
+  <line x1="720" y1="594" x2="720" y2="618" class="d-edge" marker-end="url(#fc-ah)"/>
+
+  <rect x="610" y="620" width="220" height="40" rx="8" class="d-box d-act"/>
+  <text x="720" y="637" text-anchor="middle" class="d-t">Feedback + cooldown</text>
+  <text x="720" y="653" text-anchor="middle" class="d-s">HUD flash · haptic · re-arm when still</text>
+  <path d="M830 640 H1108" class="d-loop"/>
+
+  <!-- column B side paths -->
+  <rect x="880" y="250" width="210" height="56" rx="8" class="d-box d-sat"/>
+  <text x="985" y="267" text-anchor="middle" class="d-t">Reject and log reason</text>
+  <text x="985" y="283" text-anchor="middle" class="d-s">few votes · still in cooldown</text>
+  <text x="985" y="298" text-anchor="middle" class="d-s">return stroke · app blocked</text>
+  <line x1="800" y1="278" x2="878" y2="278" class="d-edge" marker-end="url(#fc-ah)"/>
+  <text x="839" y="271" text-anchor="middle" class="d-n">no</text>
+
+  <rect x="880" y="390" width="210" height="56" rx="8" class="d-box d-sat"/>
+  <text x="985" y="407" text-anchor="middle" class="d-t">Toggle Active ↔ Standby</text>
+  <text x="985" y="423" text-anchor="middle" class="d-s">standby: 4 fps, resume only</text>
+  <text x="985" y="438" text-anchor="middle" class="d-s">no screen action</text>
+  <line x1="800" y1="418" x2="878" y2="418" class="d-edge" marker-end="url(#fc-ah)"/>
+  <text x="839" y="411" text-anchor="middle" class="d-y">yes</text>
+
+  <rect x="880" y="472" width="210" height="56" rx="8" class="d-box d-sat"/>
+  <text x="985" y="489" text-anchor="middle" class="d-t">Prompt to re-enable</text>
+  <text x="985" y="505" text-anchor="middle" class="d-s">HUD + notification</text>
+  <text x="985" y="520" text-anchor="middle" class="d-s">nothing is dispatched</text>
+  <line x1="800" y1="500" x2="878" y2="500" class="d-edge" marker-end="url(#fc-ah)"/>
+  <text x="839" y="493" text-anchor="middle" class="d-n">no</text>
+
+  <path d="M1090 278 H1108 M1090 418 H1108 M1090 500 H1108" class="d-loop"/>
+
+  <!-- interrupts -->
+  <rect x="24" y="566" width="486" height="104" rx="8" class="d-box d-sat"/>
+  <text x="40" y="588" class="d-t">Interrupts, checked at any time</text>
+  <text x="40" y="608" class="d-s">Screen off → close the camera; resume after unlock if the user chose that</text>
+  <text x="40" y="626" class="d-s">Camera taken by another app → suspend; retry when it is free again</text>
+  <text x="40" y="644" class="d-s">Thermal status moderate or worse → drop to 8 fps</text>
+  <text x="40" y="662" class="d-s">Stop from app, tile or notification → release camera, end foreground</text>
+</svg>
+      </div>
+      <figcaption>Solid arrows are the path a frame takes. Dashed lines return to the next frame, so a rejected frame costs one inference and nothing else. The arming check, the guards and the cooldown after every action prevent accidental gestures. Pause and resume never touch the screen.</figcaption>
+    </figure>
+  </section>
+
+<style>
+.track{display:flex;flex-wrap:wrap;gap:6px;list-style:none;padding:0;margin:0 0 22px}
+.track li+li{margin-top:0}
+.track a{display:flex;gap:7px;align-items:center;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);text-decoration:none;color:var(--ink);font-size:13px}
+.track a:hover{border-color:var(--muted)}
+.track .n{font:600 11.5px var(--f-mono);color:var(--muted)}
+.track .dot{width:8px;height:8px;border-radius:50%}
+.dot.cap{background:var(--cap)}.dot.per{background:var(--per)}.dot.dec{background:var(--dec)}.dot.act{background:var(--act)}.dot.os{background:var(--os)}
+.stages{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:760px){.stages{grid-template-columns:minmax(0,1fr)}}
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;min-width:0;scroll-margin-top:70px}
+.stage header{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.stage .no{font:600 13px var(--f-mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.stage h3{font-size:17.5px;flex:1;min-width:0}
+.stage dl{display:grid;grid-template-columns:84px minmax(0,1fr);gap:7px 12px;margin:0;font-size:14px;line-height:1.5}
+.stage dt{font:600 10.5px/1.9 var(--f-mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.stage dd{margin:0;min-width:0}
+.stage dd.exit{font-weight:500}
+@media (max-width:420px){.stage dl{grid-template-columns:minmax(0,1fr);gap:2px}.stage dd{margin-bottom:6px}}
+</style>
+
+  <section id="pipeline" aria-labelledby="pl-h">
+    <div class="sec-head">
+      <p class="num">03 · Project pipeline</p>
+      <h2 id="pl-h">Sixteen stages, each with an exit test</h2>
+      <p class="lead">The stages are in dependency order. A stage is finished only when its exit test passes on the Redmi Note 8 Pro. The colour shows which architecture layer the stage builds.</p>
+    </div>
+    <ol class="track" aria-label="Stage index">
+      <li><a href="#s1"><span class="dot os"></span><span class="n">01</span>Feasibility</a></li>
+      <li><a href="#s2"><span class="dot os"></span><span class="n">02</span>Setup</a></li>
+      <li><a href="#s3"><span class="dot cap"></span><span class="n">03</span>Camera</a></li>
+      <li><a href="#s4"><span class="dot cap"></span><span class="n">04</span>Frames</a></li>
+      <li><a href="#s5"><span class="dot per"></span><span class="n">05</span>Landmarks</a></li>
+      <li><a href="#s6"><span class="dot dec"></span><span class="n">06</span>Recognition</a></li>
+      <li><a href="#s7"><span class="dot dec"></span><span class="n">07</span>Guards</a></li>
+      <li><a href="#s8"><span class="dot act"></span><span class="n">08</span>Mapping</a></li>
+      <li><a href="#s9"><span class="dot act"></span><span class="n">09</span>Accessibility</a></li>
+      <li><a href="#s10"><span class="dot act"></span><span class="n">10</span>Coordinates</a></li>
+      <li><a href="#s11"><span class="dot os"></span><span class="n">11</span>Lifecycle</a></li>
+      <li><a href="#s12"><span class="dot os"></span><span class="n">12</span>UI</a></li>
+      <li><a href="#s13"><span class="dot os"></span><span class="n">13</span>Performance</a></li>
+      <li><a href="#s14"><span class="dot os"></span><span class="n">14</span>Device test</a></li>
+      <li><a href="#s15"><span class="dot os"></span><span class="n">15</span>Compatibility</a></li>
+      <li><a href="#s16"><span class="dot os"></span><span class="n">16</span>Release</a></li>
+    </ol>
+
+    <div class="stages">
+      <article class="stage" id="s1"><header><span class="no">01</span><h3>Requirements and feasibility</h3><span class="chip c-os">Plan</span></header><dl>
+        <dt>Inputs</dt><dd>This brief, Android behaviour-change docs for API 26–37, device specs, target apps (Instagram, YouTube).</dd>
+        <dt>Logic</dt><dd>Sort every feature into feasible, needs device testing, needs a workaround, or out of scope. Run three throwaway spikes: (A) Hand Landmarker fps on the device, (B) one <code>dispatchGesture</code> swipe advancing an Instagram Reel, (C) camera frames still arriving 10 min after switching to Instagram.</dd>
+        <dt>Outputs</dt><dd>Feasibility matrix, gesture vocabulary v1, KPI targets, go/no-go and the AD-1 hosting choice.</dd>
+        <dt>Depends on</dt><dd>Nothing.</dd>
+        <dt>Exit test</dt><dd class="exit">Spike A ≥ 15 fps; spike B advances 9 of 10 reels; spike C delivers frames for 10 min.</dd></dl></article>
+
+      <article class="stage" id="s2"><header><span class="no">02</span><h3>Environment and project setup</h3><span class="chip c-os">Plan</span></header><dl>
+        <dt>Inputs</dt><dd>Android Studio (stable), bundled JDK, SDK with compile/target API 36, Git.</dd>
+        <dt>Logic</dt><dd>Create <code>app</code> and <code>gesture-engine</code> modules with Gradle Kotlin DSL and a version catalog. Add CameraX, MediaPipe Tasks Vision, DataStore, lifecycle-service, coroutines and Compose. Declare the services and permissions in the manifest. Bundle <code>hand_landmarker.task</code>.</dd>
+        <dt>Outputs</dt><dd>Building skeleton, package layout, README with setup steps.</dd>
+        <dt>Depends on</dt><dd>01</dd>
+        <dt>Exit test</dt><dd class="exit">Clean <code>assembleDebug</code>; app runs on the device and an emulator; merged manifest has no INTERNET; JVM tests run.</dd></dl></article>
+
+      <article class="stage" id="s3"><header><span class="no">03</span><h3>Camera permission and front camera</h3><span class="chip c-cap">Capture</span></header><dl>
+        <dt>Inputs</dt><dd>CAMERA runtime permission, CameraX, a <code>LifecycleOwner</code> (activity for practice mode, service for live mode).</dd>
+        <dt>Logic</dt><dd>Rationale screen, denied and "don't ask again" paths, settings deep link. Select the front camera after checking it exists. Bind <code>ImageAnalysis</code> only; add <code>Preview</code> in practice mode. Observe <code>CameraState</code> for in-use, disabled and privacy-toggle errors.</dd>
+        <dt>Outputs</dt><dd><code>CameraSource</code> emitting frames; in-app preview.</dd>
+        <dt>Depends on</dt><dd>02</dd>
+        <dt>Exit test</dt><dd class="exit">Camera opens in &lt; 1 s; every denial path works without a crash; another camera app opens instantly after Stop.</dd></dl></article>
+
+      <article class="stage" id="s4"><header><span class="no">04</span><h3>Camera frame processing</h3><span class="chip c-cap">Capture</span></header><dl>
+        <dt>Inputs</dt><dd><code>ImageProxy</code> stream (RGBA_8888, about 640×480), rotation degrees, timestamps.</dd>
+        <dt>Logic</dt><dd>Keep-only-latest backpressure. A frame-rate governor drops frames early. Copy into one reused bitmap, mirror for the front camera, pass rotation through <code>ImageProcessingOptions</code>, wrap as <code>MPImage</code> with a monotonic timestamp, always close the proxy.</dd>
+        <dt>Outputs</dt><dd><code>Frame(image, timestampMs, rotation, mirrored)</code></dd>
+        <dt>Depends on</dt><dd>03</dd>
+        <dt>Exit test</dt><dd class="exit">100 % of proxies closed; conversion ≤ 5 ms; no per-frame allocations in steady state; correct orientation in all four rotations.</dd></dl></article>
+
+      <article class="stage" id="s5"><header><span class="no">05</span><h3>Hand and finger landmarks</h3><span class="chip c-per">Perception</span></header><dl>
+        <dt>Inputs</dt><dd>Frames, bundled model, options (hands, three confidence thresholds, CPU or GPU delegate).</dd>
+        <dt>Logic</dt><dd>Hand Landmarker in <code>LIVE_STREAM</code> mode with <code>detectAsync</code>. Read 21 landmarks, handedness and score per hand. Pick one primary hand (largest, nearest the centre, stable across frames). Benchmark CPU against GPU on the Mali-G76. In face mode (AD-8), Face Landmarker runs instead: blendshape scores for the eyebrows, eyes and lips, plus head yaw and pitch.</dd>
+        <dt>Outputs</dt><dd><code>HandFrame</code> or <code>NoHand</code>, with timestamp; in face mode, a <code>FaceFrame</code> or none.</dd>
+        <dt>Depends on</dt><dd>04</dd>
+        <dt>Exit test</dt><dd class="exit">Hand found in ≥ 95 % of frames at 30–80 cm in indoor light; inference p95 ≤ 60 ms; works in airplane mode.</dd></dl></article>
+
+      <article class="stage" id="s6"><header><span class="no">06</span><h3>Gesture recognition and classification</h3><span class="chip c-dec">Decision</span></header><dl>
+        <dt>Inputs</dt><dd><code>HandFrame</code> stream, sensitivity settings.</dd>
+        <dt>Logic</dt><dd>Normalise by hand size (wrist to middle-finger knuckle). One-Euro smoothing. Finger extension from joint angles. Pinch from thumb-to-index distance with hysteresis. Swipes from palm displacement, peak speed, a 150–600 ms window and a 2:1 direction ratio, using real timestamps so dropped frames do not distort speed.</dd>
+        <dt>Outputs</dt><dd><code>GestureCandidate(type, confidence, anchor)</code></dd>
+        <dt>Depends on</dt><dd>05 and the recorded trace set</dd>
+        <dt>Exit test</dt><dd class="exit">On recorded traces: swipe recall ≥ 95 %, pinch and fist ≥ 90 %, wrong direction ≤ 2 %, ≤ 2 ms per frame.</dd></dl></article>
+
+      <article class="stage" id="s7"><header><span class="no">07</span><h3>Filtering, thresholds, cooldowns</h3><span class="chip c-dec">Decision</span></header><dl>
+        <dt>Inputs</dt><dd>Candidates, tracking state, guard settings, foreground app, screen state.</dd>
+        <dt>Logic</dt><dd>Arming state machine. Confidence and hand-size gates. 4-of-5 frame votes for poses. Poses fire when entered, not while held. 700 ms cooldown, then re-arm only when the hand is still. Opposite-direction swipes ignored for 500 ms. Per-app block list. Global pause.</dd>
+        <dt>Outputs</dt><dd>At most one <code>GestureEvent</code> per physical gesture, or a logged rejection reason.</dd>
+        <dt>Depends on</dt><dd>06</dd>
+        <dt>Exit test</dt><dd class="exit">0 double fires in 50 swipes; 0 return-stroke fires; ≤ 1 false action per 15 min of natural hand activity; 0 in 30 min with no hand.</dd></dl></article>
+
+      <article class="stage" id="s8"><header><span class="no">08</span><h3>Gesture-to-action mapping</h3><span class="chip c-act">Action</span></header><dl>
+        <dt>Inputs</dt><dd><code>GestureEvent</code>, active profile (per app, else global), mappings in DataStore.</dd>
+        <dt>Logic</dt><dd>Resolve the profile, then build a semantic <code>ScreenAction</code>: scroll forward, tap at cursor, back, home, pause toggle. Pixels are worked out later, at stage 10.</dd>
+        <dt>Outputs</dt><dd><code>ScreenAction</code> command.</dd>
+        <dt>Depends on</dt><dd>07</dd>
+        <dt>Exit test</dt><dd class="exit">All six gestures remappable; Instagram and YouTube profiles override the global map; changes apply within 1 s without a restart.</dd></dl></article>
+
+      <article class="stage" id="s9"><header><span class="no">09</span><h3>AccessibilityService integration</h3><span class="chip c-act">Action</span></header><dl>
+        <dt>Inputs</dt><dd><code>ScreenAction</code>; a service the user has enabled, configured with <code>canPerformGestures</code>.</dd>
+        <dt>Logic</dt><dd>Service declaration and XML config. An executor that runs one gesture at a time through <code>dispatchGesture</code> with a result callback, plus <code>performGlobalAction</code> for back, home and recents. Overlay window. Foreground-app tracking from window-state events. Clean teardown in <code>onUnbind</code>.</dd>
+        <dt>Outputs</dt><dd>Real system touches and navigation, with completed or cancelled results.</dd>
+        <dt>Depends on</dt><dd>08</dd>
+        <dt>Exit test</dt><dd class="exit">≥ 99 % of dispatched gestures complete; app detects the service state; turning it off stops actions at once; 1 h without a crash.</dd></dl></article>
+
+      <article class="stage" id="s10"><header><span class="no">10</span><h3>Cross-app control and screen coordinates</h3><span class="chip c-act">Action</span></header><dl>
+        <dt>Inputs</dt><dd>Semantic action, display size, rotation, density, cutout, system gesture insets, cursor position.</dd>
+        <dt>Logic</dt><dd>Map the hand's active zone to screen pixels. Keep strokes inside a safe zone (15–85 % width, 20–80 % height) so they never trigger the system back or home gestures. Scroll is a 250 ms stroke over 40 % of the height. Recalculate on every rotation. Pinch-to-tap uses the frozen pre-pinch cursor position.</dd>
+        <dt>Outputs</dt><dd>Pixel-accurate stroke paths.</dd>
+        <dt>Depends on</dt><dd>09</dd>
+        <dt>Exit test</dt><dd class="exit">Taps within ±8 dp on a test grid in every rotation; one swipe advances exactly one Reel in ≥ 95 % of 50 tries; no accidental back or home.</dd></dl></article>
+
+      <article class="stage" id="s11"><header><span class="no">11</span><h3>Foreground, background and lifecycle</h3><span class="chip c-os">Operate</span></header><dl>
+        <dt>Inputs</dt><dd>Start, pause and stop from the app, notification, tile or fist hold; screen, camera, thermal and memory events.</dd>
+        <dt>Logic</dt><dd>Start only from a visible surface, then <code>startForeground</code> with type camera within 5 s. Controller states: Active, Standby, Suspended, Off. Close the camera on screen-off. Suspend while another app holds the camera. If the process dies, show "Tap to restart" instead of restarting silently.</dd>
+        <dt>Outputs</dt><dd>Recognition that keeps running across app switches, with controls always within reach.</dd>
+        <dt>Depends on</dt><dd>03–05, 09</dd>
+        <dt>Exit test</dt><dd class="exit">60 min with Instagram in front and no kill (with the recommended MIUI settings); pause works within 200 ms from every control; camera recovers ≤ 3 s after another app releases it.</dd></dl></article>
+
+      <article class="stage" id="s12"><header><span class="no">12</span><h3>User interface and gesture configuration</h3><span class="chip c-os">Operate</span></header><dl>
+        <dt>Inputs</dt><dd>Settings model, controller state, permission states.</dd>
+        <dt>Logic</dt><dd>Compose screens: setup wizard, home (start, pause, status), the hand-or-face switch (AD-8: turning one on turns the other off), gesture mapping, per-app profiles, sensitivity and cooldowns, calibration, practice mode with live landmarks and no dispatch, diagnostics. HUD overlay and haptics.</dd>
+        <dt>Outputs</dt><dd>A configurable app; visible feedback in every app.</dd>
+        <dt>Depends on</dt><dd>02 (can run alongside 05–11), 08, 11</dd>
+        <dt>Exit test</dt><dd class="exit">5 of 5 test users finish setup unaided in ≤ 3 min; settings survive restarts; HUD shows the gesture ≤ 100 ms after it fires; every control has a TalkBack label.</dd></dl></article>
+
+      <article class="stage" id="s13"><header><span class="no">13</span><h3>Performance, battery, latency, memory</h3><span class="chip c-os">Operate</span></header><dl>
+        <dt>Inputs</dt><dd>Perfetto traces, Android Studio profilers, <code>batterystats</code>, in-app diagnostics.</dd>
+        <dt>Logic</dt><dd>Frame-rate governor: 15–20 fps active, 8 searching, 4 standby, camera off when the screen is off. Analysis at ≤ 640×480. CPU or GPU decided by benchmark. Allocation-free frame path. Thermal-status throttling. Auto-standby after a set time with no hand.</dd>
+        <dt>Outputs</dt><dd>Tuned defaults and a performance report.</dd>
+        <dt>Depends on</dt><dd>04–11 working end to end</dd>
+        <dt>Exit test</dt><dd class="exit">≤ 150 ms p95 gesture to dispatch; ≥ 15 fps for 30 min; ≤ 8 %/h active, ≤ 3 %/h standby; memory ≤ 150 MB with &lt; 10 % growth in 60 min.</dd></dl></article>
+
+      <article class="stage" id="s14"><header><span class="no">14</span><h3>Testing on Redmi Note 8 Pro</h3><span class="chip c-os">Verify</span></header><dl>
+        <dt>Inputs</dt><dd>Release candidate, test plan (section 08), recorded datasets, MIUI settings checklist.</dd>
+        <dt>Logic</dt><dd>Run the functional, accuracy, false-positive, latency, battery, thermal and lifecycle suites. MIUI cases: autostart off and on, battery saver modes, app locked in Recents, clearing Recents. Cross-app runs in Reels, Shorts, feeds and Chrome.</dd>
+        <dt>Outputs</dt><dd>Test report, bug list, tuned thresholds.</dd>
+        <dt>Depends on</dt><dd>13</dd>
+        <dt>Exit test</dt><dd class="exit">All P0 cases pass; every KPI met; no crash or ANR across 3 h of sessions.</dd></dl></article>
+
+      <article class="stage" id="s15"><header><span class="no">15</span><h3>Compatibility on other devices</h3><span class="chip c-os">Verify</span></header><dl>
+        <dt>Inputs</dt><dd>Device matrix: Android 8 to 17, Pixel, Samsung, Xiaomi on HyperOS, OPPO/OnePlus/realme, Motorola, a low-end phone, a tablet or foldable, emulator with a webcam.</dd>
+        <dt>Logic</dt><dd>Run the core suite. Check camera foreground behaviour on 11 to 17, restricted settings on 13+, foreground types on 14+, 16 KB page devices, gesture versus 3-button navigation, screen sizes, OEM battery killers.</dd>
+        <dt>Outputs</dt><dd>Compatibility matrix (supported, limited, unsupported) and per-OEM setup text.</dd>
+        <dt>Depends on</dt><dd>14</dd>
+        <dt>Exit test</dt><dd class="exit">Core flows pass on ≥ 5 devices from ≥ 3 OEMs and ≥ 4 Android versions; every failure has a workaround or a "limited" label.</dd></dl></article>
+
+      <article class="stage" id="s16"><header><span class="no">16</span><h3>APK build, install and distribution</h3><span class="chip c-os">Ship</span></header><dl>
+        <dt>Inputs</dt><dd>Release keystore, version code and name, changelog.</dd>
+        <dt>Logic</dt><dd>R8 with MediaPipe keep rules. Per-ABI APKs (arm64-v8a first) plus a universal APK. v2/v3 signing. 16 KB alignment check (<code>zipalign -c -P 16</code>). SHA-256 checksums. Install guide for ADB and file installs. Publish on GitHub Releases; Play is optional later.</dd>
+        <dt>Outputs</dt><dd>Signed, verified APKs, install guide, release notes.</dd>
+        <dt>Depends on</dt><dd>15</dd>
+        <dt>Exit test</dt><dd class="exit">A reset phone goes from download to working in ≤ 10 min using the guide; the release build passes the suite; <code>apksigner verify</code> passes; updates keep settings.</dd></dl></article>
+    </div>
+  </section>
+
+<style>
+.gantt-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:12px 14px}
+.gantt{display:grid;grid-template-columns:minmax(190px,1.4fr) repeat(12,minmax(38px,1fr));min-width:820px;font-size:13px;row-gap:0}
+.gantt .hd{font:500 11px var(--f-mono);color:var(--muted);text-align:center;padding:4px 0 8px;border-bottom:1px solid var(--line)}
+.gantt .hd.l{text-align:left}
+.gantt .lab{padding:9px 10px 9px 0;border-bottom:1px solid var(--line);display:flex;gap:8px;align-items:baseline;min-width:0}
+.gantt .lab b{font:600 11.5px var(--f-mono);color:var(--muted);font-weight:600}
+.gantt .cell{border-bottom:1px solid var(--line);border-left:1px dashed var(--line);position:relative}
+.gantt .bar{align-self:center;height:22px;border-radius:5px;margin:0 3px;display:flex;align-items:center;padding:0 8px;font:600 11px var(--f-mono);white-space:nowrap;overflow:hidden;z-index:1}
+.bar.cap{background:var(--cap-soft);color:var(--cap);border:1px solid var(--cap)}
+.bar.per{background:var(--per-soft);color:var(--per);border:1px solid var(--per)}
+.bar.dec{background:var(--dec-soft);color:var(--dec);border:1px solid var(--dec)}
+.bar.act{background:var(--act-soft);color:var(--act);border:1px solid var(--act)}
+.bar.os{background:var(--os-soft);color:var(--os);border:1px solid var(--os)}
+.steps{display:grid;gap:0;padding:0;list-style:none;counter-reset:st;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.steps li{counter-increment:st;display:grid;grid-template-columns:40px minmax(0,1fr);gap:2px 12px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.steps li+li{margin-top:0}
+.steps li:last-child{border-bottom:0}
+.steps li::before{content:counter(st,decimal-leading-zero);font:600 12px/1.7 var(--f-mono);color:var(--accent);grid-row:span 2}
+.steps .why{font-size:13.5px;color:var(--muted)}
+</style>
+
+  <section id="roadmap" aria-labelledby="rm-h">
+    <div class="sec-head">
+      <p class="num">04 · Implementation order and roadmap</p>
+      <h2 id="rm-h">Build the riskiest parts first</h2>
+      <p class="lead">The order is set by risk. Phase 0 sets up the tools, the phone and the project, then tests the platform limits before any real investment. The gesture engine is built and tuned on recorded hand traces, so tuning never needs another app. Real screen actions are switched on only after a dry-run mode proves the guards work. Durations assume one developer and are estimates.</p>
+    </div>
+
+    <div class="gantt-wrap" role="img" aria-label="Twelve-week timeline: Phase 0 setup weeks 1 to 2, Phase 1 capture week 3, Phase 2 perception week 4, Phase 3 weeks 4 to 6, Phase 4 weeks 6 to 7, Phase 5 week 8, Phase 6 weeks 5 to 9 in parallel, Phase 7 weeks 9 to 10, Phase 8 weeks 10 to 12, Phase 9 week 12.">
+      <div class="gantt">
+        <div class="hd l">Phase</div>
+        <div class="hd">W1</div><div class="hd">W2</div><div class="hd">W3</div><div class="hd">W4</div><div class="hd">W5</div><div class="hd">W6</div><div class="hd">W7</div><div class="hd">W8</div><div class="hd">W9</div><div class="hd">W10</div><div class="hd">W11</div><div class="hd">W12</div>
+
+        <div class="lab" style="grid-row:2"><b>P0</b>Setup</div>
+        <div class="bar os" style="grid-row:2;grid-column:2/4">M0 · 01–02</div>
+        <div class="lab" style="grid-row:3"><b>P1</b>Capture</div>
+        <div class="bar cap" style="grid-row:3;grid-column:4/5">M1 · 03–04</div>
+        <div class="lab" style="grid-row:4"><b>P2</b>Perception</div>
+        <div class="bar per" style="grid-row:4;grid-column:5/6">M2 · 05</div>
+        <div class="lab" style="grid-row:5"><b>P3</b>Gesture engine</div>
+        <div class="bar dec" style="grid-row:5;grid-column:5/8">M3 · 06–07</div>
+        <div class="lab" style="grid-row:6"><b>P4</b>System control</div>
+        <div class="bar act" style="grid-row:6;grid-column:7/9">M4 · 08–10</div>
+        <div class="lab" style="grid-row:7"><b>P5</b>Always-on operation</div>
+        <div class="bar os" style="grid-row:7;grid-column:9/10">M5</div>
+        <div class="lab" style="grid-row:8"><b>P6</b>UX and configuration</div>
+        <div class="bar os" style="grid-row:8;grid-column:6/11">M6 · in parallel</div>
+        <div class="lab" style="grid-row:9"><b>P7</b>Optimisation</div>
+        <div class="bar os" style="grid-row:9;grid-column:10/12">M7</div>
+        <div class="lab" style="grid-row:10"><b>P8</b>Device validation</div>
+        <div class="bar os" style="grid-row:10;grid-column:11/14">M8 · 14–15</div>
+        <div class="lab" style="grid-row:11"><b>P9</b>Release</div>
+        <div class="bar os" style="grid-row:11;grid-column:13/14">M9</div>
+      </div>
+    </div>
+
+    <h3 class="sub">Phases and milestones</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Phase</th><th>Tasks</th><th>Deliverables</th><th>Needs</th><th>Complete when</th></tr></thead>
+        <tbody>
+          <tr><td class="nw"><strong>P0</strong> Setup<br><span class="muted small">Stages 01–02 · W1–2</span></td><td>Install Android Studio and the SDK; put the phone in developer mode (USB debugging, MIUI "Install via USB"); create the two modules, version catalog and manifest; bundle the model; run spikes A, B and C; pick the AD-1 host</td><td>Building skeleton app, spike report, KPI targets, gesture vocabulary v1</td><td>Brief, device</td><td><strong>M0</strong> app installs on the Note 8 Pro; all three spikes pass; no INTERNET in the merged manifest</td></tr>
+          <tr><td class="nw"><strong>P1</strong> Capture<br><span class="muted small">Stages 03–04 · W3</span></td><td>Camera permission flow, CameraX ImageAnalysis, frame converter, frame-rate governor, practice-mode preview</td><td>Correctly oriented frames in the app</td><td>M0</td><td><strong>M1</strong> every denial path handled; conversion ≤ 5 ms; all four rotations correct</td></tr>
+          <tr><td class="nw"><strong>P2</strong> Perception<br><span class="muted small">Stage 05 · W4</span></td><td>Hand Landmarker adapter, landmark overlay, diagnostics, trace recorder</td><td>Live landmarks on screen; first 200 labelled traces</td><td>M1</td><td><strong>M2</strong> ≥ 15 fps with p95 inference ≤ 60 ms</td></tr>
+          <tr><td class="nw"><strong>P3</strong> Gesture engine<br><span class="muted small">Stages 06–07 · W4–6</span></td><td>Normalise, smooth, features, pose and swipe classifiers, guards, replay tests, dry-run mode</td><td><code>gesture-engine</code> module with tests passing in CI</td><td>M2 traces</td><td><strong>M3</strong> accuracy and false-positive targets met on traces and in dry run</td></tr>
+          <tr><td class="nw"><strong>P4</strong> System control<br><span class="muted small">Stages 08–10 · W6–7</span></td><td>Mapper and profiles, AccessibilityService, executor, safe-zone geometry, HUD, air cursor</td><td>Real actions in other apps</td><td>M3</td><td><strong>M4</strong> one swipe advances one Reel in ≥ 95 % of 50 tries</td></tr>
+          <tr><td class="nw"><strong>P5</strong> Always on<br><span class="muted small">Stage 11 · W8</span></td><td>Foreground start, notification actions, tile, screen and camera interrupts, restart prompt</td><td>Hands-free use across apps</td><td>M4</td><td><strong>M5</strong> 60 min with Instagram in front, no kill, pause ≤ 200 ms</td></tr>
+          <tr><td class="nw"><strong>P6</strong> UX<br><span class="muted small">Stage 12 · W5–9</span></td><td>Setup wizard with OEM guidance, mapping, sensitivity, calibration, diagnostics</td><td>Beta build</td><td>M1, then M4</td><td><strong>M6</strong> 5 of 5 users finish setup unaided in ≤ 3 min</td></tr>
+          <tr><td class="nw"><strong>P7</strong> Optimise<br><span class="muted small">Stage 13 · W9–10</span></td><td>Profiling, GPU benchmark, allocation removal, thermal throttling</td><td>Performance report</td><td>M5</td><td><strong>M7</strong> latency, fps, battery and memory KPIs met</td></tr>
+          <tr><td class="nw"><strong>P8</strong> Validate<br><span class="muted small">Stages 14–15 · W10–12</span></td><td>Full suite on the Note 8 Pro, then the device matrix</td><td>Test report, compatibility matrix</td><td>M7</td><td><strong>M8</strong> all P0 cases pass; ≥ 5 devices, ≥ 3 OEMs</td></tr>
+          <tr><td class="nw"><strong>P9</strong> Release<br><span class="muted small">Stage 16 · W12</span></td><td>Signing, R8 check, ABI splits, 16 KB check, install guide</td><td>v1.0 APKs on GitHub Releases</td><td>M8</td><td><strong>M9</strong> reset phone working in ≤ 10 min from the guide</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sub">Build order, step by step</h3>
+    <ol class="steps">
+      <li><strong>Phase 0 setup: Android Studio and SDK, phone in developer mode, project skeleton with two modules, manifest and permissions.</strong><span class="why">The spikes run inside this skeleton, and the module boundary keeps Android imports out of the gesture engine from day one.</span></li>
+      <li><strong>Spike A: Hand Landmarker on the Redmi Note 8 Pro.</strong><span class="why">If the phone cannot track a hand at 15 fps, every later choice changes.</span></li>
+      <li><strong>Spike B: one <code>dispatchGesture</code> swipe in Instagram Reels.</strong><span class="why">Proves the core promise before any camera work.</span></li>
+      <li><strong>Spike C: camera frames keep arriving inside the AccessibilityService with Instagram in front.</strong><span class="why">Decides AD-1. Test with and without <code>startForeground</code> type camera, on MIUI and one Android 14+ phone.</span></li>
+      <li><strong>Camera source, permission flow, practice-mode preview.</strong><span class="why">Every later step needs real frames.</span></li>
+      <li><strong>Frame converter, Hand Landmarker adapter, landmark overlay, diagnostics.</strong><span class="why">You need to see what the model sees before tuning anything.</span></li>
+      <li><strong>Trace recorder and a labelled dataset, positive and negative.</strong><span class="why">Turns tuning into a JVM test run instead of waving at a phone.</span></li>
+      <li><strong>Gesture engine: geometry, filters, features, pose and swipe classifiers.</strong><span class="why">Pure Kotlin, test-first, against the recorded traces.</span></li>
+      <li><strong>Safety guard and dry-run mode.</strong><span class="why">Prove no double fires and no return strokes while nothing can touch the screen yet.</span></li>
+      <li><strong>Action mapper with default and per-app profiles.</strong><span class="why">Semantic actions keep the mapping testable without a device.</span></li>
+      <li><strong>AccessibilityService, executor, safe-zone geometry, HUD.</strong><span class="why">The first real cross-app actions, now behind tested guards.</span></li>
+      <li><strong>Air cursor with pinch-to-confirm.</strong><span class="why">The hardest interaction comes after swipes already work.</span></li>
+      <li><strong>Foreground lifecycle, notification, tile, interrupts.</strong><span class="why">Hands-free use across app switches and screen-off.</span></li>
+      <li><strong>Setup wizard, settings screens, OEM guidance.</strong><span class="why">Built in parallel from week 5, finished once the features are stable.</span></li>
+      <li><strong>Optimisation, then device validation, then release.</strong><span class="why">Measure only once the behaviour is correct, and ship only what has been measured.</span></li>
+    </ol>
+  </section>
+
+  <section id="components" aria-labelledby="cp-h">
+    <div class="sec-head">
+      <p class="num">05 · Components and technology</p>
+      <h2 id="cp-h">What each part does and why it exists</h2>
+    </div>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Component</th><th>Layer</th><th>Responsibility</th><th>Why it is needed</th></tr></thead>
+        <tbody>
+          <tr><td><strong>CameraSource</strong><br><span class="muted small">CameraX ImageAnalysis</span></td><td><span class="chip c-cap">Capture</span></td><td>Opens the front camera, delivers frames with keep-latest backpressure, reports camera errors.</td><td>Lifecycle-aware camera that behaves the same across vendors, with no hand-written Camera2 code.</td></tr>
+          <tr><td><strong>FrameConverter</strong>, <strong>FrameRateGovernor</strong></td><td><span class="chip c-cap">Capture</span></td><td>Rotation, mirroring, <code>MPImage</code> wrapping; drops frames to the target rate.</td><td>Wrong orientation breaks swipe direction. Unneeded frames waste battery.</td></tr>
+          <tr><td><strong>HandDetector</strong><br><span class="muted small">MediaPipe adapter</span></td><td><span class="chip c-per">Perception</span></td><td>21 landmarks, handedness and score per hand.</td><td>A free on-device model, no training needed. The interface lets another detector replace it.</td></tr>
+          <tr><td><strong>GestureEngine</strong><br><span class="muted small">normaliser, One-Euro filter, features, classifiers</span></td><td><span class="chip c-dec">Decision</span></td><td>Turns the landmark stream into gesture candidates.</td><td>MediaPipe's Gesture Recognizer only names static hand shapes. Swipes need motion over time.</td></tr>
+          <tr><td><strong>SafetyGuard</strong><br><span class="muted small">arming state machine, cooldown, gates</span></td><td><span class="chip c-dec">Decision</span></td><td>Passes at most one event per physical gesture.</td><td>The main defence against accidental likes, skips and taps.</td></tr>
+          <tr><td><strong>ActionMapper</strong>, <strong>ProfileRepository</strong></td><td><span class="chip c-act">Action</span></td><td>Gesture to semantic action, per app.</td><td>Lets users remap gestures. New actions need no change to recognition.</td></tr>
+          <tr><td><strong>AirTouchAccessibilityService</strong></td><td><span class="chip c-act">Action</span></td><td>Hosts the live pipeline, owns the overlay, runs as a camera foreground service while active.</td><td>The only supported way for an app to act inside other apps.</td></tr>
+          <tr><td><strong>ActionExecutor</strong>, <strong>GestureFactory</strong>, <strong>ScreenGeometry</strong></td><td><span class="chip c-act">Action</span></td><td>Semantic action to stroke paths in safe zones; one gesture in flight at a time.</td><td>Keeps pixel maths, rotation and system gesture areas in one tested place.</td></tr>
+          <tr><td><strong>ForegroundAppTracker</strong></td><td><span class="chip c-act">Action</span></td><td>Current package name from window-state events.</td><td>Drives per-app profiles and the block list.</td></tr>
+          <tr><td><strong>PipelineController</strong></td><td><span class="chip c-os">Support</span></td><td>Active, Standby, Suspended and Off states; reacts to screen, camera and thermal events.</td><td>One owner decides when the camera runs.</td></tr>
+          <tr><td><strong>HudOverlay</strong>, <strong>AirCursor</strong></td><td><span class="chip c-os">Support</span></td><td>State pill, gesture flash, arming ring, cursor.</td><td>Users must see what AirTouch sees, and taps need a cursor.</td></tr>
+          <tr><td><strong>ControlNotification</strong>, <strong>AirTouchTileService</strong></td><td><span class="chip c-os">Support</span></td><td>Pause, resume and stop from anywhere.</td><td>Meets the "disable immediately" requirement even when the notification is swiped away.</td></tr>
+          <tr><td><strong>SettingsRepository</strong></td><td><span class="chip c-os">Support</span></td><td>DataStore-backed settings exposed as <code>Flow</code>.</td><td>Local and offline, and changes apply live.</td></tr>
+          <tr><td><strong>Compose UI</strong>, <strong>Diagnostics</strong>, <strong>TraceRecorder</strong></td><td><span class="chip c-os">Support</span></td><td>Setup, settings, practice mode, metrics; records landmark traces to local files (debug builds only).</td><td>Setup must be guided. Traces feed the replay tests.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sub">Technology choices</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Technology</th><th>Used for</th><th>Notes</th><th>Cost</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Kotlin</strong>, coroutines and Flow</td><td>All code; frame and event streams</td><td>One single-thread dispatcher for the engine keeps events in order</td><td class="nw">Free · Apache 2.0</td></tr>
+          <tr><td><strong>Android Studio</strong></td><td>IDE, profilers, APK Analyzer</td><td>Latest stable; Gradle Kotlin DSL with a version catalog</td><td class="nw">Free</td></tr>
+          <tr><td><strong>CameraX</strong> 1.6.x</td><td>Front camera frames</td><td>min SDK 23. <code>ImageAnalysis</code> has no frame-rate setter, so use <code>SessionConfig</code> frame-rate ranges or Camera2Interop, plus the governor</td><td class="nw">Free · Apache 2.0</td></tr>
+          <tr><td><strong>MediaPipe Tasks Vision</strong> 1.1.x</td><td>Hand Landmarker</td><td>min SDK 24. Native libraries are 16 KB-aligned (since 0.10.26). Rotation is supported; region of interest is not</td><td class="nw">Free · Apache 2.0</td></tr>
+          <tr><td><strong>AccessibilityService API</strong></td><td>Gestures, global actions, overlay</td><td><code>dispatchGesture</code> from API 24; continued strokes for drag and long press from API 26</td><td class="nw">Platform</td></tr>
+          <tr><td><strong>Jetpack Compose</strong>, Material 3</td><td>App screens</td><td>Edge-to-edge is mandatory at target API 36</td><td class="nw">Free · Apache 2.0</td></tr>
+          <tr><td><strong>Jetpack DataStore</strong></td><td>Settings, profiles</td><td>Preferences DataStore, with JSON for gesture maps</td><td class="nw">Free · Apache 2.0</td></tr>
+          <tr><td><strong>JUnit</strong>, coroutines-test, AndroidX Test, Perfetto</td><td>Tests and traces</td><td>Replay tests run on the JVM; Perfetto times the frame path</td><td class="nw">Free</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small muted" style="margin-top:12px">SDK levels: <strong>minSdk 26</strong> (Android 8.0) for continued strokes and notification channels; <strong>compile and target SDK 36</strong>, which Google Play has required for new apps and updates since 31 Aug 2026; test on API 37 (Android 17).</p>
+  </section>
+
+  <section id="gestures" aria-labelledby="gs-h">
+    <div class="sec-head">
+      <p class="num">06 · Gesture design and accidental-action prevention</p>
+      <h2 id="gs-h">Six gestures, one action each</h2>
+      <p class="lead">Landmark x is mirrored for the front camera, so "left" always means the user's left. Distances are divided by hand size, so the same rules work at 30 cm and at 80 cm.</p>
+    </div>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Gesture</th><th>How the user does it</th><th>Detection rule</th><th>Default action</th><th>Android call</th></tr></thead>
+        <tbody>
+          <tr><td class="nw"><strong>Swipe up</strong></td><td>Open palm moves up</td><td>Palm travel ≥ 0.25 of the frame in 150–600 ms, vertical ≥ 2× horizontal, hand open</td><td>Next Reel or Short, scroll forward</td><td>Stroke 70 % → 30 % of height, 250 ms</td></tr>
+          <tr><td class="nw"><strong>Swipe down</strong></td><td>Open palm moves down</td><td>Same rule, downward</td><td>Previous Reel, scroll back</td><td>Stroke 30 % → 70 % of height</td></tr>
+          <tr><td class="nw"><strong>Swipe left</strong></td><td>Open palm moves to the user's left</td><td>Same rule, horizontal</td><td>Next page, carousel or tab</td><td>Stroke 80 % → 20 % of width</td></tr>
+          <tr><td class="nw"><strong>Swipe right</strong></td><td>Open palm moves to the user's right</td><td>Same rule, horizontal</td><td>Back</td><td><code>GLOBAL_ACTION_BACK</code></td></tr>
+          <tr><td class="nw"><strong>Pinch</strong></td><td>Thumb tip touches index tip</td><td>Tip distance ÷ hand size below 0.25 to enter, above 0.35 to leave; fires once on entry</td><td>Tap at the cursor, or at screen centre in feed mode</td><td>Single-point stroke, 50 ms</td></tr>
+          <tr><td class="nw"><strong>Fist, held 1 s</strong></td><td>Close all fingers</td><td>Four fingers curled and thumb folded in 4 of 5 frames, held 1 s</td><td>Pause or resume AirTouch</td><td>None; internal state change</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small muted" style="margin-top:10px">Ready to add later without touching other layers: double pinch for double-tap (like), open palm held for Home, two-hand pinch for zoom (two simultaneous strokes).</p>
+
+    <h3 class="sub">Arming state machine</h3>
+    <figure class="fig">
+      <div class="scroll">
+<svg viewBox="0 0 1060 240" role="img" aria-label="Arming state machine. Idle goes to Tracking when a valid hand is seen, to Armed after 300 ms steady, to Fired when a gesture passes the guards, to Cooldown when the action is sent. Cooldown returns to Armed after 700 ms with the hand still. Losing the hand for 500 ms from any state returns to Idle.">
+  <defs><marker id="fsm-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-ah"/></marker></defs>
+  <rect x="20" y="90" width="140" height="50" rx="25" class="d-box d-os"/>
+  <text x="90" y="111" text-anchor="middle" class="d-t">Idle</text><text x="90" y="127" text-anchor="middle" class="d-s">no hand</text>
+  <rect x="240" y="90" width="140" height="50" rx="25" class="d-box d-dec"/>
+  <text x="310" y="111" text-anchor="middle" class="d-t">Tracking</text><text x="310" y="127" text-anchor="middle" class="d-s">hand seen, unsteady</text>
+  <rect x="460" y="90" width="140" height="50" rx="25" class="d-box d-dec"/>
+  <text x="530" y="111" text-anchor="middle" class="d-t">Armed</text><text x="530" y="127" text-anchor="middle" class="d-s">gestures accepted</text>
+  <rect x="680" y="90" width="140" height="50" rx="25" class="d-box d-act"/>
+  <text x="750" y="111" text-anchor="middle" class="d-t">Fired</text><text x="750" y="127" text-anchor="middle" class="d-s">one action sent</text>
+  <rect x="900" y="90" width="140" height="50" rx="25" class="d-box d-dec"/>
+  <text x="970" y="111" text-anchor="middle" class="d-t">Cooldown</text><text x="970" y="127" text-anchor="middle" class="d-s">everything ignored</text>
+
+  <line x1="160" y1="115" x2="238" y2="115" class="d-edge" marker-end="url(#fsm-ah)"/>
+  <text x="200" y="98" text-anchor="middle" class="d-l">valid</text><text x="200" y="109" text-anchor="middle" class="d-l">hand</text>
+  <line x1="380" y1="115" x2="458" y2="115" class="d-edge" marker-end="url(#fsm-ah)"/>
+  <text x="420" y="98" text-anchor="middle" class="d-l">steady</text><text x="420" y="109" text-anchor="middle" class="d-l">300 ms</text>
+  <line x1="600" y1="115" x2="678" y2="115" class="d-edge" marker-end="url(#fsm-ah)"/>
+  <text x="640" y="98" text-anchor="middle" class="d-l">passes</text><text x="640" y="109" text-anchor="middle" class="d-l">guards</text>
+  <line x1="820" y1="115" x2="898" y2="115" class="d-edge" marker-end="url(#fsm-ah)"/>
+  <text x="860" y="98" text-anchor="middle" class="d-l">action</text><text x="860" y="109" text-anchor="middle" class="d-l">sent</text>
+
+  <path d="M970 90 V44 H530 V88" class="d-edge" marker-end="url(#fsm-ah)"/>
+  <text x="750" y="36" text-anchor="middle" class="d-l">≥ 700 ms and hand still → re-arm (blocks the return stroke)</text>
+
+  <path d="M310 140 V188 M530 140 V188 M970 140 V188 H90 V142" class="d-loop" marker-end="url(#fsm-ah)"/>
+  <circle cx="310" cy="188" r="3" class="d-dot"/><circle cx="530" cy="188" r="3" class="d-dot"/>
+  <text x="530" y="210" text-anchor="middle" class="d-l">hand lost for 500 ms, from any state → reset to Idle</text>
+</svg>
+      </div>
+      <figcaption>Fired lasts one frame. Cooldown is the reason a swipe up never triggers the swipe down that follows when the hand drops back. Fist-hold pause is handled by the pipeline controller and works from any state.</figcaption>
+    </figure>
+
+    <h3 class="sub">Tapping a precise spot: air cursor with pinch-to-confirm</h3>
+    <div class="grid g4">
+      <div class="card"><p class="eyebrow">1 · Enter</p><p class="small">Point with the index finger for 0.5 s, or switch from feed mode in the HUD. A cursor appears.</p></div>
+      <div class="card"><p class="eyebrow">2 · Aim</p><p class="small">The cursor follows the smoothed index tip. The middle 60 % of the camera view maps to the full screen, so the arm never has to reach the edges.</p></div>
+      <div class="card"><p class="eyebrow">3 · Confirm</p><p class="small">Pinch. The tap lands where the cursor was 120 ms before the pinch began, and the ring turns solid as it fires.</p></div>
+      <div class="card"><p class="eyebrow">4 · Cancel</p><p class="small">Open the palm or lower the hand out of view. Nothing is dispatched.</p></div>
+    </div>
+    <p class="small muted" style="margin-top:10px">Planned for v1.1: snap the cursor to the nearest clickable element. It needs window-content access, so it stays off by default. A 3 × 3 zone grid is the fallback for users who need larger targets.</p>
+  </section>
+
+<style>
+.feas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:960px){.feas{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.feas{grid-template-columns:minmax(0,1fr)}}
+.feas .card ul{font-size:13.5px;display:grid;gap:5px}
+.feas .card li+li{margin-top:0}
+.checks{display:grid;gap:8px;padding:0;list-style:none}
+.checks li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 14px;font-size:14px}
+.checks li+li{margin-top:0}
+.checks .n{font:600 12px/1.7 var(--f-mono);color:var(--accent)}
+</style>
+
+  <section id="platform" aria-labelledby="pf-h">
+    <div class="sec-head">
+      <p class="num">07 · Permissions and platform constraints</p>
+      <h2 id="pf-h">What Android allows, version by version</h2>
+      <p class="lead">Android does not behave the same on every version, and Xiaomi adds rules of its own on top. The plan works within each limit below. The Redmi Note 8 Pro stops at Android 11, so the newer rules still have to be tested on other phones.</p>
+    </div>
+
+    <h3 class="sub">What is feasible</h3>
+    <div class="feas">
+      <div class="card"><span class="badge b-ok">FEASIBLE</span><p class="small muted">Standard, documented APIs</p><ul>
+        <li>21-point hand tracking on the phone</li><li>Swipe, pinch and fist from custom rules</li><li>Swipe, tap, double-tap, long press via <code>dispatchGesture</code></li><li>Back, Home, Recents, notifications</li><li>Overlay HUD and cursor with no extra permission</li><li>Offline use, local settings</li><li>Start, pause, stop from app, notification, tile</li></ul></div>
+      <div class="card"><span class="badge b-test">NEEDS DEVICE TESTING</span><p class="small muted">Works, but varies by phone</p><ul>
+        <li>Camera kept alive by the AccessibilityService on MIUI and other OEM skins</li><li>One swipe = exactly one Reel or Short as apps update</li><li>15 fps on the Helio G90T; CPU vs GPU</li><li>Accuracy in dim light and backlight</li><li>Landscape, tablets, foldables, split screen</li><li>Quick Settings tile start on Android 14+</li></ul></div>
+      <div class="card"><span class="badge b-work">NEEDS A WORKAROUND</span><p class="small muted">User action or a design change</p><ul>
+        <li>Accessibility must be switched on by the user</li><li>Android 13+ sideloads: "Allow restricted settings"</li><li>MIUI autostart, no battery restrictions, lock in Recents</li><li>Another app takes the camera: suspend and retry</li><li>Notification can be swiped away: tile and gesture controls</li><li>Imprecise taps: cursor plus pinch</li></ul></div>
+      <div class="card"><span class="badge b-no">NOT FEASIBLE OR OUT OF SCOPE</span><p class="small muted">By platform rule or by choice</p><ul>
+        <li>Control with the screen off or locked</li><li>Apps that refuse accessibility input (some banking, payment, DRM)</li><li>Sharing the front camera with another app</li><li>Starting the camera at boot (blocked on Android 15+)</li><li>Exact taps from raw fingertip position</li><li>iOS</li></ul></div>
+    </div>
+
+    <h3 class="sub">Permissions in the manifest</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Permission or declaration</th><th>Type</th><th>Applies from</th><th>Why AirTouch needs it</th><th>Required</th></tr></thead>
+        <tbody>
+          <tr><td><code>CAMERA</code></td><td>Runtime</td><td class="nw">All</td><td>Read front-camera frames</td><td><span class="badge b-ok">YES</span></td></tr>
+          <tr><td><code>FOREGROUND_SERVICE</code></td><td>Normal</td><td class="nw">API 28</td><td>Run as a foreground service while detecting</td><td><span class="badge b-ok">YES</span></td></tr>
+          <tr><td><code>FOREGROUND_SERVICE_CAMERA</code> + <code>foregroundServiceType="camera"</code></td><td>Normal</td><td class="nw">API 34 (type from 30)</td><td>Camera access from the foreground service. CAMERA must be granted before <code>startForeground()</code>, or it throws <code>SecurityException</code></td><td><span class="badge b-ok">YES</span></td></tr>
+          <tr><td><code>POST_NOTIFICATIONS</code></td><td>Runtime</td><td class="nw">API 33</td><td>Status notification with Pause and Stop</td><td><span class="badge b-test">RECOMMENDED</span></td></tr>
+          <tr><td><code>BIND_ACCESSIBILITY_SERVICE</code> on the service</td><td>Declared, not requested</td><td class="nw">All</td><td>Only the system can bind the service. The config sets <code>canPerformGestures="true"</code></td><td><span class="badge b-ok">YES</span></td></tr>
+          <tr><td><code>&lt;queries&gt;</code> for launcher apps</td><td>Manifest</td><td class="nw">API 30</td><td>List installed apps for per-app profiles without <code>QUERY_ALL_PACKAGES</code></td><td><span class="badge b-ok">YES</span></td></tr>
+          <tr><td><code>BIND_QUICK_SETTINGS_TILE</code> on the tile</td><td>Declared</td><td class="nw">API 24</td><td>Start and pause from Quick Settings</td><td><span class="badge b-test">OPTIONAL</span></td></tr>
+          <tr><td><code>VIBRATE</code></td><td>Normal</td><td class="nw">All</td><td>Haptic tick when a gesture fires</td><td><span class="badge b-test">OPTIONAL</span></td></tr>
+          <tr><td><code>REQUEST_IGNORE_BATTERY_OPTIMIZATIONS</code></td><td>Normal</td><td class="nw">API 23</td><td>One-tap exemption prompt. Google Play restricts it, so the Play build links to battery settings instead</td><td><span class="badge b-test">OPTIONAL</span></td></tr>
+          <tr><td>Not declared: <code>INTERNET</code>, <code>SYSTEM_ALERT_WINDOW</code>, <code>RECEIVE_BOOT_COMPLETED</code>, <code>QUERY_ALL_PACKAGES</code></td><td colspan="3">Not needed. Leaving them out keeps the app provably offline and cuts store-review risk</td><td><span class="badge b-no">NO</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sub">Settings the user has to change by hand</h3>
+    <ol class="checks">
+      <li><span class="n">01</span><span><strong>Turn on the accessibility service.</strong> Settings → Accessibility → Downloaded apps (MIUI: Installed services) → AirTouch. An app cannot do this for the user. For development: <code>adb shell settings put secure enabled_accessibility_services &lt;package&gt;/&lt;service&gt;</code>.</span></li>
+      <li><span class="n">02</span><span><strong>Android 13+, APK installed from a browser or file manager:</strong> App info → ⋮ → Allow restricted settings, then repeat step 1. ADB installs and Android 11 phones are not affected.</span></li>
+      <li><span class="n">03</span><span><strong>Battery.</strong> Android 12+: App battery usage → Unrestricted. MIUI: Battery saver → No restrictions.</span></li>
+      <li><span class="n">04</span><span><strong>Xiaomi only:</strong> Security → Autostart → on, and lock AirTouch in Recents so cleaning Recents does not kill it. Samsung, OPPO and vivo have similar switches; the setup wizard shows the right one for each brand.</span></li>
+      <li><span class="n">05</span><span><strong>Android 12+:</strong> keep the Camera access quick toggle on. If it is off, frames arrive black and AirTouch shows "Camera blocked".</span></li>
+    </ol>
+
+    <h3 class="sub">Android changes that affect AirTouch</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Version</th><th>Change</th><th>What AirTouch does</th></tr></thead>
+        <tbody>
+          <tr><td class="nw"><strong>8.0</strong> · API 26</td><td>Background service limits</td><td>Foreground service while detecting; this is also minSdk</td></tr>
+          <tr><td class="nw"><strong>9</strong> · API 28</td><td>Idle apps lose camera access</td><td>The camera runs only inside a foreground or system-bound service</td></tr>
+          <tr><td class="nw"><strong>10</strong> · API 29</td><td>Gesture navigation; thermal status API</td><td>Strokes stay out of edge gesture zones; fps drops when the phone runs hot</td></tr>
+          <tr><td class="nw"><strong>11</strong> · API 30 <span class="chip c-per">Note 8 Pro</span></td><td>Camera foreground type; a service started from the background gets no camera; package visibility</td><td>Start detection only from a visible surface; <code>&lt;queries&gt;</code> for the app list</td></tr>
+          <tr><td class="nw"><strong>12</strong> · API 31</td><td>Background foreground-service starts blocked; camera indicator and privacy toggle; untrusted overlays block touches</td><td>Start from the UI, tile or notification; handle blocked frames; accessibility overlays count as trusted</td></tr>
+          <tr><td class="nw"><strong>13</strong> · API 33</td><td>Notification permission; restricted settings for sideloads; foreground notifications swipeable</td><td>Ask for notifications; restricted-settings steps in setup; tile and gesture controls as backups</td></tr>
+          <tr><td class="nw"><strong>14</strong> · API 34</td><td>Foreground types and <code>FOREGROUND_SERVICE_CAMERA</code> mandatory; ongoing notifications also dismissible; tiles must launch with a PendingIntent; data-sensitive views</td><td>Declare the type and permission; check CAMERA before <code>startForeground()</code>; tile opens a small start activity</td></tr>
+          <tr><td class="nw"><strong>15</strong> · API 35</td><td>No camera foreground service from BOOT_COMPLETED; restricted settings broadened; edge-to-edge</td><td>Never auto-start at boot; edge-to-edge layouts</td></tr>
+          <tr><td class="nw"><strong>16</strong> · API 36</td><td>Advanced Protection Mode blocks sideloading when switched on; orientation locks ignored on screens ≥ 600 dp; Play target level</td><td>Target API 36; layouts that adapt to any orientation</td></tr>
+          <tr><td class="nw"><strong>17</strong> · API 37</td><td>Advanced Protection limits accessibility to verified Accessibility Tools; memory limits based on RAM</td><td>Document as unsupported for Advanced Protection users; keep memory under budget</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sub">Limits on controlling other apps</h3>
+    <div class="grid g2">
+      <div class="card"><h4>Camera is exclusive</h4><p class="small">Only one app can use the front camera, and the app on screen wins. Instagram's Story camera or a video call suspends AirTouch. It resumes when the camera is free again.</p></div>
+      <div class="card"><h4>Some apps reject accessibility input</h4><p class="small">Some banking and payment apps block or warn about third-party accessibility services. Views marked data-sensitive (Android 14+) respond only to verified accessibility tools. These apps go on the default block list.</p></div>
+      <div class="card"><h4>App updates change gestures</h4><p class="small">A swipe that advances a Reel today may behave differently after an Instagram update. Stroke length and speed live in per-app profiles, so they can be retuned without new code.</p></div>
+      <div class="card"><h4>Store and install rules</h4><p class="small">Google Play needs the Accessibility declaration form and an in-app disclosure. Since Oct 2025 it bans accessibility use that acts on its own, but user-triggered fixed rules like AirTouch's remain allowed. Android developer verification started on 30 Sep 2026 in Brazil, Indonesia, Singapore and Thailand, for installs from seven app stores only, with a global rollout planned for 2027. ADB installs are not affected, and a free account covers up to 20 test devices.</p></div>
+    </div>
+  </section>
+
+  <section id="testing" aria-labelledby="ts-h">
+    <div class="sec-head">
+      <p class="num">08 · Testing strategy</p>
+      <h2 id="ts-h">Measure every promise</h2>
+      <p class="lead">Recognition is tested on the JVM by replaying recorded landmark traces, so every threshold change gets a score in seconds. Everything that touches the camera, the screen or the battery is tested on real phones, starting with the Redmi Note 8 Pro.</p>
+    </div>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Test</th><th>What it checks</th><th>Method and tools</th><th>Pass criteria</th></tr></thead>
+        <tbody>
+          <tr><td class="nw"><strong>Gesture recognition</strong></td><td>Each gesture is recognised, in the right direction</td><td>Labelled traces from 10 people × 6 gestures × 20 repetitions, in bright, dim and backlit rooms, at 30, 50 and 80 cm, left and right hands, a range of skin tones; JVM replay tests</td><td>Swipes ≥ 95 % recall, pinch and fist ≥ 90 %, wrong direction ≤ 2 %</td></tr>
+          <tr><td class="nw"><strong>False positives</strong></td><td>Nothing fires that the user did not mean</td><td>15-minute sessions of talking with hands, eating, drinking, typing, adjusting glasses, people walking behind; plus 30 min with no hand in view</td><td>≤ 1 unintended action per 15 min; 0 with no hand</td></tr>
+          <tr><td class="nw"><strong>Latency</strong></td><td>Speed from motion to action</td><td>Timestamps at capture, landmarks, gesture event, dispatch and completion callback; 240 fps slow-motion video from a second phone for motion-to-screen time</td><td>≤ 150 ms p95 from end of motion to dispatch</td></tr>
+          <tr><td class="nw"><strong>Battery and heat</strong></td><td>Cost of keeping the camera on</td><td>60 min of Reels at fixed brightness, with and without AirTouch; <code>dumpsys batterystats</code>, Battery Historian, battery temperature</td><td>≤ 8 %/h extra active, ≤ 3 %/h standby; never below 12 fps from throttling</td></tr>
+          <tr><td class="nw"><strong>Memory</strong></td><td>No leaks over long sessions</td><td>60-minute soak; Android Studio memory profiler; LeakCanary in debug builds</td><td>≤ 150 MB; &lt; 10 % growth</td></tr>
+          <tr><td class="nw"><strong>Screen coordinates</strong></td><td>Taps and strokes land where intended</td><td>Debug target-grid screen; Developer options → Pointer location shows injected touches; four rotations, gesture and 3-button navigation, display-size changes, cutouts, split screen</td><td>Within ± 8 dp; no stroke triggers system Back or Home</td></tr>
+          <tr><td class="nw"><strong>Cross-app</strong></td><td>Control works in real apps</td><td>Instagram Reels, YouTube Shorts, Facebook and X feeds, Chrome, Gallery, Settings, launcher; script below for Instagram</td><td>All P0 cases pass</td></tr>
+          <tr><td class="nw"><strong>Lifecycle and recovery</strong></td><td>AirTouch survives real-life interruptions</td><td>Screen off and on, lock, rotate, swipe from Recents, force stop, <code>adb shell am kill</code>, revoke camera, turn accessibility off, Doze (<code>dumpsys deviceidle force-idle</code>), reboot</td><td>Correct state after each, no crash, a clear prompt when the user must act</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sub">Instagram Reels test script</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>ID</th><th>Scenario</th><th>Expected result</th></tr></thead>
+        <tbody>
+          <tr><td class="nw"><code>IG-01</code></td><td>Phone on a stand at 40 cm, Reels tab, 50 swipe-ups</td><td>≥ 48 single advances; 0 double advances</td></tr>
+          <tr><td class="nw"><code>IG-02</code></td><td>20 swipe-downs</td><td>Previous Reel each time; never skips two</td></tr>
+          <tr><td class="nw"><code>IG-03</code></td><td>Pinch in feed mode</td><td>One tap at centre; no double-tap, so no accidental like</td></tr>
+          <tr><td class="nw"><code>IG-04</code></td><td>15 min of watching while eating and gesturing naturally</td><td>≤ 1 unintended action</td></tr>
+          <tr><td class="nw"><code>IG-05</code></td><td>Open the Story camera inside Instagram, then close it</td><td>AirTouch shows "Camera in use", then resumes within 3 s</td></tr>
+          <tr><td class="nw"><code>IG-06</code></td><td>Switch from Instagram to YouTube Shorts and back</td><td>Profile switches in ≤ 500 ms; swipes keep working</td></tr>
+          <tr><td class="nw"><code>IG-07</code></td><td>Keyboard open in comments; a notification arrives</td><td>No stray actions; swipes do not reach the keyboard</td></tr>
+          <tr><td class="nw"><code>IG-08</code></td><td>60-minute session</td><td>Battery, temperature and fps within targets; no kill</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="risks" aria-labelledby="rk-h">
+    <div class="sec-head">
+      <p class="num">09 · Risks and mitigations</p>
+      <h2 id="rk-h">What is most likely to go wrong</h2>
+    </div>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Risk or failure scenario</th><th>Likelihood</th><th>Impact</th><th>Mitigation</th></tr></thead>
+        <tbody>
+          <tr><td><strong>OEM kills the process or turns the service off</strong> after cleaning Recents (common on MIUI)</td><td><span class="badge b-hi">HIGH</span></td><td><span class="badge b-hi">HIGH</span></td><td>Setup steps for autostart, no battery restrictions and locking in Recents; detect a disabled service and show a banner with a deep link; keep the service crash-free, since repeated crashes can make Android switch it off</td></tr>
+          <tr><td><strong>Accidental actions</strong>: likes, skips, stray taps</td><td><span class="badge b-hi">HIGH</span></td><td><span class="badge b-hi">HIGH</span></td><td>Arming, confidence and size gates, frame votes, cooldown, return-stroke suppression, per-app block list, dry-run mode, fist-hold pause</td></tr>
+          <tr><td><strong>Background camera refused</strong> on some builds</td><td><span class="badge b-med">MEDIUM</span></td><td><span class="badge b-hi">HIGH</span></td><td>Spike C in week 1; start from a visible surface with <code>startForeground</code> type camera; fallback to a separate camera service; "Tap to restart" prompt</td></tr>
+          <tr><td><strong>Always-on camera worries users</strong></td><td><span class="badge b-med">MEDIUM</span></td><td><span class="badge b-hi">HIGH</span></td><td>No INTERNET permission, frames never stored, visible notification and camera indicator, camera off with the screen, one-tap Stop</td></tr>
+          <tr><td><strong>Taps miss their target</strong></td><td><span class="badge b-hi">HIGH</span></td><td><span class="badge b-med">MEDIUM</span></td><td>Cursor with pre-pinch position freeze, central active zone, 3 × 3 zone fallback, snap-to-element later</td></tr>
+          <tr><td><strong>Another app takes the camera</strong></td><td><span class="badge b-hi">HIGH</span></td><td><span class="badge b-lo">LOW</span></td><td>Watch <code>CameraState</code>, suspend with a HUD message, resume when the camera is free</td></tr>
+          <tr><td><strong>Heat and battery drain</strong> on the Helio G90T</td><td><span class="badge b-med">MEDIUM</span></td><td><span class="badge b-med">MEDIUM</span></td><td>Frame-rate governor, ≤ 640×480 analysis, standby, thermal throttling, auto-standby with no hand</td></tr>
+          <tr><td><strong>Dim light or backlight</strong> loses the hand</td><td><span class="badge b-med">MEDIUM</span></td><td><span class="badge b-med">MEDIUM</span></td><td>Low-light hint from frame brightness, exposure compensation, positioning tips in setup</td></tr>
+          <tr><td><strong>Instagram or YouTube changes</strong> how swipes behave</td><td><span class="badge b-med">MEDIUM</span></td><td><span class="badge b-med">MEDIUM</span></td><td>Stroke settings in per-app profiles; rerun the IG script on every app update</td></tr>
+          <tr><td><strong>Coordinate bugs</strong> from rotation, mirroring or cutouts</td><td><span class="badge b-med">MEDIUM</span></td><td><span class="badge b-med">MEDIUM</span></td><td>One <code>ScreenGeometry</code> with unit tests for each rotation, mirrored and not; debug landmark overlay</td></tr>
+          <tr><td><strong>Phone moves in the hand</strong> and fakes a swipe</td><td><span class="badge b-med">MEDIUM</span></td><td><span class="badge b-med">MEDIUM</span></td><td>Recommend a stand; optional gyroscope gate ignores gestures while the phone itself moves</td></tr>
+          <tr><td><strong>Bystanders or a second hand</strong> in view</td><td><span class="badge b-med">MEDIUM</span></td><td><span class="badge b-med">MEDIUM</span></td><td>Primary-hand selection, minimum hand size, hand must stay armed</td></tr>
+          <tr><td><strong>Install friction</strong>: restricted settings, developer verification in 2027</td><td><span class="badge b-med">MEDIUM</span></td><td><span class="badge b-med">MEDIUM</span></td><td>Step-by-step install guide; ADB for testers; register a developer account before the global rollout</td></tr>
+          <tr><td><strong>Play rejects the Accessibility use</strong></td><td><span class="badge b-med">MEDIUM</span></td><td><span class="badge b-lo">LOW</span></td><td>v1 ships outside Play; later add the declaration form, in-app disclosure and privacy policy, with no autonomous behaviour</td></tr>
+          <tr><td><strong>Release build breaks MediaPipe</strong> (R8, upgrades)</td><td><span class="badge b-lo">LOW</span></td><td><span class="badge b-hi">HIGH</span></td><td>Versions pinned in the catalog, keep rules, test suite run on the release build</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+<style>
+.tree{font:13px/1.6 var(--f-mono);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;overflow-x:auto;white-space:pre;margin:0;color:var(--ink)}
+.tree .c{color:var(--muted)}
+.tree .m{color:var(--accent);font-weight:600}
+footer.foot{border-top:1px solid var(--line);margin-top:56px;padding-block:22px 40px;background:var(--surface)}
+footer.foot .wrap{display:grid;gap:6px;font-size:13px;color:var(--muted)}
+</style>
+
+  <section id="structure" aria-labelledby="st-h">
+    <div class="sec-head">
+      <p class="num">10 · Proposed project structure</p>
+      <h2 id="st-h">Two modules, one package per layer</h2>
+      <p class="lead">The <code>gesture-engine</code> module is plain Kotlin, so the build itself stops Android code from leaking into recognition logic. Packages in <code>app</code> follow the architecture layers. No files are created yet. <code>com.airtouch</code> is a placeholder for your own reverse-domain ID.</p>
+    </div>
+<pre class="tree">AirTouch/
+├── settings.gradle.kts
+├── build.gradle.kts
+├── gradle/libs.versions.toml                <span class="c"># every dependency version pinned here</span>
+├── <span class="m">app/</span>                                     <span class="c"># Android application module</span>
+│   ├── build.gradle.kts                     <span class="c"># minSdk 26 · targetSdk 36 · ABI splits</span>
+│   ├── proguard-rules.pro                   <span class="c"># MediaPipe keep rules</span>
+│   └── src/
+│       ├── main/
+│       │   ├── AndroidManifest.xml
+│       │   ├── assets/hand_landmarker.task
+│       │   ├── res/xml/accessibility_service_config.xml
+│       │   └── java/com/airtouch/
+│       │       ├── AirTouchApp.kt           <span class="c"># Application; builds AppGraph</span>
+│       │       ├── di/AppGraph.kt           <span class="c"># hand-wired dependencies</span>
+│       │       ├── camera/                  <span class="c"># CameraSource, FrameConverter, FrameRateGovernor</span>
+│       │       ├── vision/                  <span class="c"># HandDetector interface, MediaPipeHandDetector</span>
+│       │       ├── pipeline/                <span class="c"># PipelineController, state machine, GesturePipeline</span>
+│       │       ├── accessibility/           <span class="c"># AirTouchAccessibilityService, ActionExecutor,</span>
+│       │       │                            <span class="c"># GestureFactory, ScreenGeometry, ForegroundAppTracker</span>
+│       │       ├── overlay/                 <span class="c"># HudOverlay, AirCursor</span>
+│       │       ├── controls/                <span class="c"># ControlNotification, AirTouchTileService, StartActivity</span>
+│       │       ├── settings/                <span class="c"># SettingsRepository, ProfileRepository (DataStore)</span>
+│       │       ├── diagnostics/             <span class="c"># Metrics, TraceRecorder (debug only)</span>
+│       │       ├── oem/                     <span class="c"># per-brand setup guidance (MIUI, One UI, ColorOS…)</span>
+│       │       └── ui/                      <span class="c"># Compose: onboarding, home, mapping, sensitivity,</span>
+│       │                                    <span class="c"># calibration, practice, diagnostics, theme</span>
+│       ├── test/                            <span class="c"># JVM tests for app-side logic</span>
+│       └── androidTest/                     <span class="c"># instrumented and UI tests</span>
+└── <span class="m">gesture-engine/</span>                          <span class="c"># pure Kotlin/JVM module, no Android imports</span>
+    ├── build.gradle.kts
+    └── src/
+        ├── main/kotlin/com/airtouch/gesture/
+        │   ├── model/                       <span class="c"># Landmark, HandFrame, Gesture, GestureEvent, ScreenAction</span>
+        │   ├── geometry/                    <span class="c"># normalisation, mirroring, rotation, CoordinateMapper</span>
+        │   ├── filter/                      <span class="c"># OneEuroFilter, RingBuffer</span>
+        │   ├── features/                    <span class="c"># FingerState, PinchMetric, Kinematics</span>
+        │   ├── classify/                    <span class="c"># GestureClassifier, PoseClassifier, SwipeDetector</span>
+        │   ├── guard/                       <span class="c"># EngagementStateMachine, CooldownPolicy, ConfidenceGate</span>
+        │   ├── mapping/                     <span class="c"># ActionMapper, Profile</span>
+        │   └── GestureEngine.kt
+        └── test/
+            ├── kotlin/com/airtouch/gesture/ <span class="c"># replay and unit tests</span>
+            └── resources/traces/            <span class="c"># labelled landmark recordings (.jsonl)</span></pre>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p>AirTouch project blueprint · v1.1 · 25 Oct 2026 · Adds AD-8: hand or face gestures, one at a time.</p>
+    <p>Platform facts checked against Android developer documentation, AOSP sources, Google Play policy pages and the MediaPipe and CameraX release notes as of October 2026. Re-check them at each new Android release.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav a'));
+  var targets = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        links.forEach(function (a, i) { a.setAttribute('aria-current', targets[i] === e.target ? 'true' : 'false'); });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    targets.forEach(function (t) { if (t) io.observe(t); });
+  }
+})();
+
+(function () {
+  var svg = document.getElementById('hla-svg');
+  var note = document.getElementById('hla-phase-note');
+  if (!svg || !note) return;
+  var groups = Array.prototype.slice.call(svg.querySelectorAll('[data-phase]'));
+  var btns = Array.prototype.slice.call(document.querySelectorAll('.pbtn'));
+  var info = {
+    all: 'Showing the finished architecture. Each badge names the phase that builds that part. Pick a phase to see what exists at the end of it.',
+    '0': 'P0 Setup, weeks 1–2. Builds the app process and its manifest (services, permissions, no INTERNET), the bundled model file and an empty settings store. The three feasibility spikes run in this skeleton.',
+    '1': 'P1 Capture, week 3. Adds CameraX ImageAnalysis: front-camera frames, rotated, mirrored and throttled. Working at the end: correctly oriented frames in practice mode.',
+    '2': 'P2 Perception, week 4. Adds the MediaPipe Hand Landmarker, which loads the bundled model, plus diagnostics and the trace recorder. Working at the end: 21 landmarks drawn live at 15 fps or more.',
+    '3': 'P3 Decision, weeks 4–6. Adds the gesture engine and the safety guard, reading thresholds and cooldowns from settings. Working at the end: gestures recognised in dry-run mode, with nothing sent to the screen.',
+    '4': 'P4 Action, weeks 6–7. Adds the action mapper, the AccessibilityService executor, the overlay and the foreground-app tracker. Working at the end: one swipe advances one Instagram Reel.',
+    '5': 'P5 Always-on, week 8. Adds the pipeline controller, the user controls and system-event handling, with the camera foreground service. Working at the end: hands-free control across app switches for 60 minutes.',
+    '6': 'P6–P9, weeks 5–12. No new parts. Setup and settings screens finish the user controls, then the whole diagram is optimised, validated on devices and released.'
+  };
+  function show(p) {
+    btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-show') === p)); });
+    var n = p === 'all' ? Infinity : Number(p);
+    svg.classList.toggle('stepping', p !== 'all');
+    groups.forEach(function (g) {
+      var ph = g.getAttribute('data-phase');
+      g.classList.remove('later', 'now');
+      if (ph === 'os' || p === 'all') return;
+      var v = Number(ph);
+      if (v > n) g.classList.add('later'); else if (v === n) g.classList.add('now');
+    });
+    note.textContent = info[p];
+  }
+  btns.forEach(function (b) { b.addEventListener('click', function () { show(b.getAttribute('data-show')); }); });
+})();
+
+(async function () {
+  var bar = document.getElementById('hla-save');
+  var msg = document.getElementById('hla-save-msg');
+  var dl = null;
+  try { dl = window.claude && window.claude.use ? await window.claude.use('downloads') : null; } catch (e) { dl = null; }
+  if (!dl) return;
+  bar.hidden = false;
+
+  function exportSvg() {
+    var html = document.documentElement;
+    var prev = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', 'light');
+    var cs = getComputedStyle(html);
+    var css = document.getElementById('svg-css').textContent.replace(/var\((--[\w-]+)\)/g, function (_, n) { return cs.getPropertyValue(n).trim(); });
+    var bg = cs.getPropertyValue('--surface').trim();
+    if (prev === null) html.removeAttribute('data-theme'); else html.setAttribute('data-theme', prev);
+    var ns = 'http://www.w3.org/2000/svg';
+    var svg = document.getElementById('hla-svg').cloneNode(true);
+    svg.classList.remove('stepping');
+    Array.prototype.forEach.call(svg.querySelectorAll('[data-phase]'), function (g) { g.classList.remove('later', 'now'); });
+    svg.setAttribute('xmlns', ns);
+    svg.setAttribute('width', '1120');
+    svg.setAttribute('height', '790');
+    var style = document.createElementNS(ns, 'style');
+    style.textContent = css;
+    var rect = document.createElementNS(ns, 'rect');
+    rect.setAttribute('width', '1120'); rect.setAttribute('height', '790'); rect.setAttribute('fill', bg);
+    svg.insertBefore(rect, svg.firstChild);
+    svg.insertBefore(style, svg.firstChild);
+    return new XMLSerializer().serializeToString(svg);
+  }
+
+  function exportPng(svgText) {
+    return new Promise(function (resolve, reject) {
+      var img = new Image();
+      img.onload = function () {
+        var scale = 2, c = document.createElement('canvas');
+        c.width = 1120 * scale; c.height = 790 * scale;
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        c.toBlob(function (b) { b ? resolve(b) : reject(new Error('png')); }, 'image/png');
+      };
+      img.onerror = reject;
+      img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgText);
+    });
+  }
+
+  async function save(kind) {
+    msg.textContent = '';
+    try {
+      var svgText = exportSvg();
+      var data = kind === 'svg' ? svgText : await exportPng(svgText);
+      await dl.save({ filename: 'airtouch-hla.' + kind, data: data });
+      msg.textContent = 'Saved airtouch-hla.' + kind;
+    } catch (e) {
+      var code = e && e.code;
+      msg.textContent = code === 'declined' ? 'Save cancelled.' : code === 'rate_limited' ? 'Another save is open. Try again in a moment.' : 'Saving is not available in this view.';
+    }
+  }
+  document.getElementById('hla-svg-btn').addEventListener('click', function () { save('svg'); });
+  document.getElementById('hla-png-btn').addEventListener('click', function () { save('png'); });
+})();
+</script>
+</body></html>

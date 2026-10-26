@@ -1,0 +1,4 @@
+<resources>
+    <string name="spike_app_name">AirTouch Spike</string>
+    <string name="spike_service_description">Phase 0 test build. Sends test swipes and runs the front camera so AirTouch can check what this phone allows. Remove after testing.</string>
+</resources>
